@@ -156,6 +156,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 LastOnGroundTime = Data.coyoteTime;
             }
+            
+            if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsDashing) ||
+                (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && !IsFacingRight)) && !IsWallJumping)
+            {
+                LastOnWallRightTime = Data.coyoteTime;
+            }
+
+            if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && !IsFacingRight) ||
+                 (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsFacingRight)) && !IsWallJumping)
+            {
+                LastOnWallLeftTime = Data.coyoteTime;
+            }
+            
+            LastOnWallTime = Mathf.Max(LastOnWallLeftTime, LastOnWallRightTime);
         }
         #endregion
 
