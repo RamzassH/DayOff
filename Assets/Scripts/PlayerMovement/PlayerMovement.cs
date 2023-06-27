@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.ComponentModel.Design;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -17,22 +18,28 @@ public class PlayerMovement : MonoBehaviour
     #region STATE PARAMETERS
 
     //Флаги описывающие текущее состояние персонажа
+
     #region State flags
 
     // Смотрит ли песронаж направо
     public bool IsFacingRight { get; private set; }
+
     // Прыгает ли сейчас персонаж
     public bool IsJumping { get; private set; }
+
     // Прыгает ли сейчас персонаж от стены
     public bool IsWallJumping { get; private set; }
+
     // Происходит ли сейчас дэщ
     public bool IsDashing { get; private set; }
+
     // Происходит ли сейчай слайд
     public bool IsSliding { get; private set; }
 
     #endregion
 
     //Переменные таймеры нужны для "времени кайота"
+
     #region Timers
 
     public float LastOnGroundTime { get; private set; }
@@ -41,8 +48,9 @@ public class PlayerMovement : MonoBehaviour
     public float LastOnWallLeftTime { get; private set; }
 
     #endregion
-    
+
     // Приватные  переменные для прыжка
+
     #region Jump
 
     //jumpCut - Прерывание прыжка, то есть персонаж прыгает не на полную амплетуду
@@ -52,9 +60,11 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     // Приватные переменные для прыжка от стены
+
     #region Wall Jump
-    
+
     private float _wallJumpStartTime;
+
     // Мы хотим знать направление в которое мы прыгаем от стены
     private int _lastWallJumpDir;
 
@@ -78,20 +88,20 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     // Точки зачекивания на те или иные слои(дочерние объекты персонажа)
+
     #region CHECK PARAMETERS
 
-    [Header("Checks")] 
-    [SerializeField] private Transform _groundCheckPoint;
+    [Header("Checks")] [SerializeField] private Transform _groundCheckPoint;
     [SerializeField] private Vector2 _groundCheckSize = new Vector2(0.49f, 0.03f);
 
-    [Space(5)] 
-    [SerializeField] private Transform _frontWallCheckPoint;
+    [Space(5)] [SerializeField] private Transform _frontWallCheckPoint;
     [SerializeField] private Transform _backWallCheckPoint;
     [SerializeField] private Vector2 _wallCheckSize = new Vector2(0.5f, 1f);
 
     #endregion
 
     //Слои и тэги
+
     #region LAYERS & TAGS
 
     [Header("Layers & Tags")] [SerializeField]
@@ -116,6 +126,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         // Запускаем наши таймеры
+
         #region TIMERS
 
         LastOnGroundTime -= Time.deltaTime;
@@ -125,14 +136,14 @@ public class PlayerMovement : MonoBehaviour
 
         LastPressedJumpTime -= Time.deltaTime;
         LastPressedDashTime -= Time.deltaTime;
-        
+
         #endregion
-        
+
         #region INPUT
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
         _moveInput.y = Input.GetAxisRaw("Vertical");
-        
+
         // Если был ввод по оси x, то проверяем направление нашего персонажа
         if (_moveInput.x != 0)
         {
@@ -143,6 +154,17 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             OnJumpInput();
+        }
+        
+        if (_moveInput.y < 0)
+        {
+            DoJumpCut();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) ||
+            Input.GetKeyDown(KeyCode.RightShift))
+        {
+            OnDashInput();
         }
 
         #endregion
@@ -156,25 +178,29 @@ public class PlayerMovement : MonoBehaviour
             {
                 LastOnGroundTime = Data.coyoteTime;
             }
-            
+
             if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsDashing) ||
-                (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && !IsFacingRight)) && !IsWallJumping)
+                 (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
+                  !IsFacingRight)) && !IsWallJumping)
             {
                 LastOnWallRightTime = Data.coyoteTime;
             }
 
-            if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && !IsFacingRight) ||
-                 (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsFacingRight)) && !IsWallJumping)
+            if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
+                  !IsFacingRight) ||
+                 (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
+                  IsFacingRight)) && !IsWallJumping)
             {
                 LastOnWallLeftTime = Data.coyoteTime;
             }
-            
+
             LastOnWallTime = Mathf.Max(LastOnWallLeftTime, LastOnWallRightTime);
         }
+
         #endregion
 
         #region JUMP CHECKS
-        
+
         // Мы узнаем, что наш персонаж падает после прыжка
         if (IsJumping && RB.velocity.y < 0)
         {
@@ -187,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
                 _isJumpFalling = true;
             }
         }
-        
+
         if (LastOnGroundTime > 0 && !IsJumping && !IsWallJumping)
         {
             _isJumpCut = false;
@@ -197,7 +223,7 @@ public class PlayerMovement : MonoBehaviour
                 _isJumpFalling = false;
             }
         }
-        
+
         // Мы не прыгаем, если дэшимся
         if (!IsDashing)
         {
@@ -220,32 +246,132 @@ public class PlayerMovement : MonoBehaviour
                 _wallJumpStartTime = Time.time;
                 // Определяем напралвение прыжка нашего персонажа
                 _lastWallJumpDir = (LastOnWallRightTime > 0) ? -1 : 1;
-                
+
                 WallJump(_lastWallJumpDir);
             }
         }
+
+        #endregion
+
+        #region SLIDE CHECKS
+
+        if ( CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) ||
+                                (LastOnWallRightTime > 0 && _moveInput.x > 0)))
+        {
+            IsSliding = true;
+        }
+        else
+        {
+            IsSliding = false;
+        }
+
+        #endregion
+
+        #region DASH CHECKS
+
+        if (CanDash() && LastPressedDashTime > 0)
+        {
+            Sleep(Data.dashSleepTime);
+
+
+            if (_moveInput != Vector2.zero)
+            {
+                _lastDashDir = _moveInput;
+            }
+            else
+            {
+                _lastDashDir = IsFacingRight ? Vector2.right : Vector2.left;
+            }
+
+
+            IsDashing = true;
+            IsJumping = false;
+            IsWallJumping = false;
+            _isJumpCut = false;
+
+            StartCoroutine(nameof(StartDash), _lastDashDir);
+        }
+        #endregion
+
+        #region GRAVITY
+
+        if (!_isDashAttacking)
+        {
+            if (IsSliding)
+            {
+                SetGravityScale(0);
+            }
+            else if (RB.velocity.y < 0 && _moveInput.y < 0)
+            {
+                SetGravityScale(Data.gravityScale * Data.fastFallGravityMultiplier);
+                RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFastFallSpeed));
+            }
+            else if (_isJumpCut)
+            {
+                SetGravityScale(Data.gravityScale * Data.jumpCutGravityMultiplier);
+                RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFastFallSpeed));
+            }
+            else if ((IsJumping || IsWallJumping || _isJumpFalling) &&
+                     Mathf.Abs(RB.velocity.y) < Data.jumpHangTimeThreshold)
+            {
+                SetGravityScale(Data.gravityScale * Data.jumpHangGravityMultiplier);
+            }
+            else if (RB.velocity.y < 0)
+            {
+                SetGravityScale(Data.gravityScale * Data.fallGravityMultiplier);
+                RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFastFallSpeed));
+            }
+            else
+            {
+                SetGravityScale(Data.gravityScale);
+            }
+        }
+        else
+        {
+            SetGravityScale(0);
+        }
+
         #endregion
     }
 
     private void FixedUpdate()
     {
-        Run(0.5f);
+        if (!IsDashing)
+        {
+            if (IsWallJumping)
+            {
+                Run(Data.wallJumpRunLerp);
+            }
+            else
+            {
+                Run(1);
+            }
+        }
+        else if (_isDashAttacking)
+        {
+            Run(Data.dashEndRunLerp);
+        }
+
+        if (IsSliding)
+        {
+            Slide();
+        }
     }
 
     #region INPUT CALLBACKS
-    
+
     public void OnJumpInput()
     {
         LastPressedJumpTime = Data.jumpInputBufferTime;
     }
 
-    // public void OnJumpUpInput()
-    // {
-    //     if (CanJumpCut() || CanWallJumpCut())
-    //     {
-    //         _isJumpCut = true;
-    //     }
-    // }
+    public void DoJumpCut()
+    {
+        if (CanJumpCut() || CanWallJumpCut())
+        {
+            _isJumpCut = true;
+        }
+    }
 
     public void OnDashInput()
     {
@@ -260,7 +386,7 @@ public class PlayerMovement : MonoBehaviour
     {
         RB.gravityScale = scale;
     }
-    
+
     private void Sleep(float duration)
     {
         StartCoroutine(nameof(PerformSleep), duration);
@@ -272,7 +398,7 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSecondsRealtime(duration); //Must be Realtime since timeScale with be 0 
         Time.timeScale = 1;
     }
-    
+
     #endregion
 
     #region RUN METHODS
@@ -286,7 +412,7 @@ public class PlayerMovement : MonoBehaviour
         #region CALCULATE ACCELERATEION
 
         float accelerationRate;
-        
+
         if (LastOnGroundTime > 0)
             accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f)
                 ? Data.runAccelerationAmount
@@ -303,7 +429,7 @@ public class PlayerMovement : MonoBehaviour
             accelerationRate *= Data.jumpHangAccelerationMult;
             targetSpeed *= Data.jumpHangMaxSpeedMult;
         }
-        
+
         #region Conserve Momentum
 
         if (Data.doConserveMomentum &&
@@ -349,7 +475,7 @@ public class PlayerMovement : MonoBehaviour
         {
             force -= RB.velocity.y;
         }
-        
+
         RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
 
         #endregion
@@ -376,17 +502,77 @@ public class PlayerMovement : MonoBehaviour
         {
             force.y -= RB.velocity.y;
         }
-        
+
         RB.AddForce(force, ForceMode2D.Impulse);
-        
+
         #endregion
     }
 
     #endregion
 
+    #region DASH METHODS
+
+    private IEnumerator StartDash(Vector2 dir)
+    {
+        LastOnGroundTime = 0;
+        LastPressedDashTime = 0;
+
+        float startTime = Time.time;
+
+        _dashesLeft--;
+        _isDashAttacking = true;
+        
+        SetGravityScale(0);
+
+        while (Time.time - startTime <= Data.dashAttackTime)
+        {
+            RB.velocity = dir.normalized * Data.dashSpeed;
+            
+            yield return null;
+        }
+
+        startTime = Time.time;
+
+        _isDashAttacking = false;
+        
+        SetGravityScale(Data.gravityScale);
+        RB.velocity = Data.dashEndSpeed * dir.normalized;
+
+        while (Time.time - startTime <= Data.dashEndTime)
+        {
+            yield return null;
+        }
+
+        IsDashing = false;
+    }
+
+
+    private IEnumerator RefillDash(int amount)
+    {
+        _dashRefilling = true;
+        yield return new WaitForSeconds(Data.dashRefillTime);
+        _dashRefilling = false;
+        _dashesLeft = Mathf.Min(Data.dashAmount, _dashesLeft + 1);
+    }
+    #endregion
+
+    #region OTHER
+
+    private void Slide()
+    {
+        float speedDif = Data.slideSpeed - RB.velocity.y;
+        float movement = speedDif * Data.slideAccel;
+
+        movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime),
+            Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
+        
+        RB.AddForce(movement * Vector2.up);
+    }
+
+    #endregion
+    
     #region CHECK METHODS
 
-    
     private bool CanJump()
     {
         return LastOnGroundTime > 0 && !IsJumping;
@@ -409,13 +595,48 @@ public class PlayerMovement : MonoBehaviour
 
     private bool CanWallJumpCut()
     {
-        return IsWallJumping && RB.velocity.y > 0; 
+        return IsWallJumping && RB.velocity.y > 0;
     }
 
+    private bool CanDash()
+    {
+        if (!IsDashing && _dashesLeft < Data.dashAmount && LastOnGroundTime > 0 && !_dashRefilling)
+        {
+            StartCoroutine(nameof(RefillDash), 1);
+        }
+
+        return _dashesLeft > 0;
+    }
+
+    public bool CanSlide()
+    {
+        if (LastOnWallTime > 0 && !IsJumping && !IsWallJumping && !IsDashing && LastOnWallTime <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
     public void CheckDirectionToFace(bool isMovingRight)
     {
         if (isMovingRight != IsFacingRight)
             Turn();
+    }
+    #endregion
+
+    #region EDITOR METHODS
+
+    private void OnDrawGizmosSelected()
+    {
+         Gizmos.color = Color.green;
+         Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
+         
+         Gizmos.color = Color.cyan;
+         Gizmos.DrawWireCube(_frontWallCheckPoint.position, _wallCheckSize);
+         Gizmos.DrawWireCube(_backWallCheckPoint.position, _wallCheckSize);
     }
 
     #endregion
