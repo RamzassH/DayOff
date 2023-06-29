@@ -1037,7 +1037,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51040e0627592f849bb4a4a8da46ce63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data: {fileID: 11400000, guid: bacc69f2762363440838d67ccfa8ac4f, type: 2}
+  Data: {fileID: 11400000, guid: 26ce889cb6d4f974fae8d2930bc52ffd, type: 2}
   _groundCheckPoint: {fileID: 1311329017}
   _groundCheckSize: {x: 0.49, y: 0.03}
   _frontWallCheckPoint: {fileID: 1598237162}

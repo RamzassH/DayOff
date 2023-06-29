@@ -1,8 +1,4 @@
-using System;
 using System.Collections;
-using System.ComponentModel.Design;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -56,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
     //jumpCut - Прерывание прыжка, то есть персонаж прыгает не на полную амплетуду
     private bool _isJumpCut;
     private bool _isJumpFalling;
+    private int _jumpCharge;
 
     #endregion
 
@@ -71,10 +68,22 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     // Dash
+
+    #region Dash
+
+    //
     private int _dashesLeft;
+
+    // Перезарядка дэша
     private bool _dashRefilling;
+
+    // Направление последнего дэша
     private Vector2 _lastDashDir;
+
+    // Происходит ли сейчас Дэш
     private bool _isDashAttacking;
+
+    #endregion
 
     #endregion
 
@@ -155,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
         {
             OnJumpInput();
         }
-        
+
         if (_moveInput.y < 0)
         {
             DoJumpCut();
@@ -174,14 +183,19 @@ public class PlayerMovement : MonoBehaviour
         // Если персонаж не прыгает и находится на земле, то мы ему даем время "кайота"
         if (!IsDashing && !IsJumping)
         {
+            // Если персонаж на заемле, то постоянно накидываем ему время "кайота",
+            // Т.е. если персонаж уходит с платформы, то может прыгнуть, пока время "кайота" не выйдет
             if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer))
             {
                 LastOnGroundTime = Data.coyoteTime;
             }
 
-            if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsDashing) ||
+            // То же, что и с землей, только для стен
+            if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
+                  IsFacingRight) ||
                  (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
-                  !IsFacingRight)) && !IsWallJumping)
+                  !IsFacingRight)))
+                // && !IsWallJumping)
             {
                 LastOnWallRightTime = Data.coyoteTime;
             }
@@ -189,11 +203,13 @@ public class PlayerMovement : MonoBehaviour
             if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
                   !IsFacingRight) ||
                  (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
-                  IsFacingRight)) && !IsWallJumping)
+                  IsFacingRight)))
+                //&& !IsWallJumping)
             {
                 LastOnWallLeftTime = Data.coyoteTime;
             }
 
+            // Две проверки нужны, чтобы не было необходимости проверять от какой стены мы сейчас отпрегнули
             LastOnWallTime = Mathf.Max(LastOnWallLeftTime, LastOnWallRightTime);
         }
 
@@ -214,14 +230,24 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        if (LastOnGroundTime > 0)
+        {
+            JumpRefill(Data.jumpCharge);
+        }
+
+        if (IsWallJumping && Time.time - _wallJumpStartTime > Data.wallJumpTime)
+        {
+            IsWallJumping = false;
+        }
+
         if (LastOnGroundTime > 0 && !IsJumping && !IsWallJumping)
         {
             _isJumpCut = false;
 
-            if (!IsJumping)
-            {
-                _isJumpFalling = false;
-            }
+            // if (!IsJumping)
+            // {
+            _isJumpFalling = false;
+            // }
         }
 
         // Мы не прыгаем, если дэшимся
@@ -255,8 +281,8 @@ public class PlayerMovement : MonoBehaviour
 
         #region SLIDE CHECKS
 
-        if ( CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) ||
-                                (LastOnWallRightTime > 0 && _moveInput.x > 0)))
+        if (CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) ||
+                           (LastOnWallRightTime > 0 && _moveInput.x > 0)))
         {
             IsSliding = true;
         }
@@ -291,6 +317,7 @@ public class PlayerMovement : MonoBehaviour
 
             StartCoroutine(nameof(StartDash), _lastDashDir);
         }
+
         #endregion
 
         #region GRAVITY
@@ -476,9 +503,15 @@ public class PlayerMovement : MonoBehaviour
             force -= RB.velocity.y;
         }
 
+        _jumpCharge--;
         RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
 
         #endregion
+    }
+
+    private void JumpRefill(int charge)
+    {
+        _jumpCharge = charge;
     }
 
     private void WallJump(int dir)
@@ -521,20 +554,20 @@ public class PlayerMovement : MonoBehaviour
 
         _dashesLeft--;
         _isDashAttacking = true;
-        
+
         SetGravityScale(0);
 
         while (Time.time - startTime <= Data.dashAttackTime)
         {
             RB.velocity = dir.normalized * Data.dashSpeed;
-            
+
             yield return null;
         }
 
         startTime = Time.time;
 
         _isDashAttacking = false;
-        
+
         SetGravityScale(Data.gravityScale);
         RB.velocity = Data.dashEndSpeed * dir.normalized;
 
@@ -554,6 +587,7 @@ public class PlayerMovement : MonoBehaviour
         _dashRefilling = false;
         _dashesLeft = Mathf.Min(Data.dashAmount, _dashesLeft + 1);
     }
+
     #endregion
 
     #region OTHER
@@ -565,17 +599,18 @@ public class PlayerMovement : MonoBehaviour
 
         movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime),
             Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
-        
+
         RB.AddForce(movement * Vector2.up);
     }
 
     #endregion
-    
+
     #region CHECK METHODS
 
     private bool CanJump()
     {
-        return LastOnGroundTime > 0 && !IsJumping;
+        return LastOnGroundTime > 0 && !IsJumping ||
+               _jumpCharge > 0 && (IsJumping || _isJumpFalling) && LastOnWallTime <= 0;
     }
 
     private bool CanWallJump()
@@ -619,24 +654,25 @@ public class PlayerMovement : MonoBehaviour
             return false;
         }
     }
-    
+
     public void CheckDirectionToFace(bool isMovingRight)
     {
         if (isMovingRight != IsFacingRight)
             Turn();
     }
+
     #endregion
 
     #region EDITOR METHODS
 
     private void OnDrawGizmosSelected()
     {
-         Gizmos.color = Color.green;
-         Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
-         
-         Gizmos.color = Color.cyan;
-         Gizmos.DrawWireCube(_frontWallCheckPoint.position, _wallCheckSize);
-         Gizmos.DrawWireCube(_backWallCheckPoint.position, _wallCheckSize);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(_frontWallCheckPoint.position, _wallCheckSize);
+        Gizmos.DrawWireCube(_backWallCheckPoint.position, _wallCheckSize);
     }
 
     #endregion

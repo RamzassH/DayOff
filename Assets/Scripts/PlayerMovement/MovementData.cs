@@ -37,7 +37,8 @@ public class MovementData : ScriptableObject
     public float jumpTimeToApex; //Время, которое должно пройти перед достижением максимальной высоты прыжка
     [HideInInspector] public float jumpForce; //Сила, прикладываемая к игроку во время прыжка
 
-    [Header("Both Jumps")] 
+    [Header("Both Jumps")] public int jumpCharge; //Колличество возможных подряд прыжков
+    
     public float jumpCutGravityMultiplier; //Множитель накладывается на игрока, если тот нажимает "вниз" во время прыжка
 
     [Range(0f, 1)]
