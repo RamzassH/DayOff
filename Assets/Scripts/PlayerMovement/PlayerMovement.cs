@@ -34,13 +34,20 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
-    //Переменные таймеры нужны для "времени кайота"
+    // Переменные таймеры нужны для "времени кайота"
 
     #region Timers
 
+    // Таймер последнего нахождения персонажа на земле(если больше 0, значит находится на замле, иначе - нет)
     public float LastOnGroundTime { get; private set; }
+
+    // Таймер последнего нахождения персонажа на стене(если больше 0, значит находится на замле, иначе - нет)
     public float LastOnWallTime { get; private set; }
+
+    // Таймер последнего нахождения персонажа на правой стене(если больше 0, значит находится на замле, иначе - нет)
     public float LastOnWallRightTime { get; private set; }
+
+    // Таймер последнего нахождения персонажа на левой стене(если больше 0, значит находится на замле, иначе - нет)
     public float LastOnWallLeftTime { get; private set; }
 
     #endregion
@@ -49,9 +56,14 @@ public class PlayerMovement : MonoBehaviour
 
     #region Jump
 
-    //jumpCut - Прерывание прыжка, то есть персонаж прыгает не на полную амплетуду
+    // jumpCut - Прерывание прыжка, то есть персонаж прыгает не на полную амплетуду
     private bool _isJumpCut;
+
+    // Падает ли сейчас персонаж
     private bool _isJumpFalling;
+
+    // Кол-во зарядов прыжков персонажа(нужно для дабл джампа).
+    // TODO можно сделать бонусы, которые временно добавляют кол-во впрыжков. 
     private int _jumpCharge;
 
     #endregion
@@ -71,7 +83,6 @@ public class PlayerMovement : MonoBehaviour
 
     #region Dash
 
-    //
     private int _dashesLeft;
 
     // Перезарядка дэша
@@ -91,7 +102,10 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 _moveInput;
 
+    // Таймер послденего считывания кнопки "прыжка"
     public float LastPressedJumpTime { get; private set; }
+
+    // Таймер послденего считывания кнопки "дэша"
     public float LastPressedDashTime { get; private set; }
 
     #endregion
@@ -185,26 +199,25 @@ public class PlayerMovement : MonoBehaviour
         {
             // Если персонаж на заемле, то постоянно накидываем ему время "кайота",
             // Т.е. если персонаж уходит с платформы, то может прыгнуть, пока время "кайота" не выйдет
-            if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer))
+            if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping)
             {
+                JumpRefill(Data.jumpCharge);
                 LastOnGroundTime = Data.coyoteTime;
             }
 
             // То же, что и с землей, только для стен
-            if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
-                  IsFacingRight) ||
-                 (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
-                  !IsFacingRight)))
-                // && !IsWallJumping)
+            if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsFacingRight)
+                 || (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
+                     !IsFacingRight)) && !IsWallJumping)
             {
                 LastOnWallRightTime = Data.coyoteTime;
             }
 
+            //Right Wall Check
             if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
-                  !IsFacingRight) ||
-                 (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
-                  IsFacingRight)))
-                //&& !IsWallJumping)
+                  !IsFacingRight)
+                 || (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) &&
+                     IsFacingRight)) && !IsWallJumping)
             {
                 LastOnWallLeftTime = Data.coyoteTime;
             }
@@ -243,11 +256,7 @@ public class PlayerMovement : MonoBehaviour
         if (LastOnGroundTime > 0 && !IsJumping && !IsWallJumping)
         {
             _isJumpCut = false;
-
-            // if (!IsJumping)
-            // {
             _isJumpFalling = false;
-            // }
         }
 
         // Мы не прыгаем, если дэшимся
@@ -281,8 +290,9 @@ public class PlayerMovement : MonoBehaviour
 
         #region SLIDE CHECKS
 
-        if (CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) ||
-                           (LastOnWallRightTime > 0 && _moveInput.x > 0)))
+        if (CanSlide() &&
+            ((LastOnWallLeftTime > 0 && _moveInput.x < 0) ||
+             (LastOnWallRightTime > 0 && _moveInput.x > 0)))
         {
             IsSliding = true;
         }
@@ -297,9 +307,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (CanDash() && LastPressedDashTime > 0)
         {
+            // Можно зафризить игру на долю секунды, чтобы добпвить Epic...
             Sleep(Data.dashSleepTime);
 
-
+            // Если направление Дэша не выбрано, то дэшимся в текущем направлении
             if (_moveInput != Vector2.zero)
             {
                 _lastDashDir = _moveInput;
@@ -330,12 +341,16 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (RB.velocity.y < 0 && _moveInput.y < 0)
             {
+                // Если жмем вниз во время падения, то падаем быстрее
                 SetGravityScale(Data.gravityScale * Data.fastFallGravityMultiplier);
+                // Ограничиваем максимальную скорость падения
                 RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFastFallSpeed));
             }
             else if (_isJumpCut)
             {
+                // Быстрее падаем вниз при jumpCut'е
                 SetGravityScale(Data.gravityScale * Data.jumpCutGravityMultiplier);
+                // Ограничиваем максимальную скорость падения
                 RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFastFallSpeed));
             }
             else if ((IsJumping || IsWallJumping || _isJumpFalling) &&
@@ -346,7 +361,7 @@ public class PlayerMovement : MonoBehaviour
             else if (RB.velocity.y < 0)
             {
                 SetGravityScale(Data.gravityScale * Data.fallGravityMultiplier);
-                RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFastFallSpeed));
+                RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFallSpeed));
             }
             else
             {
@@ -355,6 +370,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            // Пока дэшимся, гравитацию вырубаем
             SetGravityScale(0);
         }
 
@@ -422,7 +438,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator PerformSleep(float duration)
     {
         Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(duration); //Must be Realtime since timeScale with be 0 
+        yield return new WaitForSecondsRealtime(duration); 
         Time.timeScale = 1;
     }
 
@@ -497,7 +513,6 @@ public class PlayerMovement : MonoBehaviour
         #region Perform Jump
 
         float force = Data.jumpForce;
-
         if (RB.velocity.y < 0)
         {
             force -= RB.velocity.y;
@@ -609,8 +624,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool CanJump()
     {
-        return LastOnGroundTime > 0 && !IsJumping ||
-               _jumpCharge > 0 && (IsJumping || _isJumpFalling) && LastOnWallTime <= 0;
+        return _jumpCharge > 0 && (LastOnGroundTime > 0 && !IsJumping ||
+                 (IsJumping || _isJumpFalling) && LastOnWallTime <= 0);
     }
 
     private bool CanWallJump()
@@ -645,7 +660,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool CanSlide()
     {
-        if (LastOnWallTime > 0 && !IsJumping && !IsWallJumping && !IsDashing && LastOnWallTime <= 0)
+        if (LastOnWallTime > 0 && !IsJumping && !IsWallJumping && !IsDashing && LastOnGroundTime <= 0)
         {
             return true;
         }
