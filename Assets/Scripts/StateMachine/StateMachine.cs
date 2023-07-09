@@ -2,24 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StateMachine
+namespace TMPVersion
 {
-    
-    private State _currentState = null;
+    public class StateMachine
+    {
 
-    StateMachine(State startState) {
-        _currentState = startState;
-        _currentState.Enter();
-    }
+        private State _currentState = null;
 
-    public void ChangeState(State newState) { 
-        _currentState.Exit();
-        _currentState = newState;
-        _currentState.Enter();
-    }
+        StateMachine(State startState)
+        {
+            _currentState = startState;
+            _currentState.Enter();
+        }
 
-    public State CurrentState { get 
-        { return _currentState; } 
+        public void ChangeState(State newState)
+        {
+            _currentState.Exit();
+            _currentState = newState;
+            _currentState.Enter();
+        }
+
+        public State CurrentState
+        {
+            get
+            { return _currentState; }
+        }
+
     }
-    
 }
