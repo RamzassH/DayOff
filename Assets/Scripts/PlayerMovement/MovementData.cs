@@ -43,7 +43,7 @@ public class MovementData : ScriptableObject
 
     [Range(0f, 1)]
     public float jumpHangGravityMultiplier; //Чем игрок выше во время прыжка, тем слабее сила, которая тянет его вверх
-    public float jumpHangTimeThreshold; //Чем меньше скорость игрока, тем дольше он будет "зависать" в воздухе
+    public float jumpHangTimeThreshold; // Чем меньше скорость игрока, тем дольше он будет "зависать" в воздухе
     
     [Space(0.5f)]
     public float jumpHangAccelerationMult; //Ускорение на игрока во время прыжка 

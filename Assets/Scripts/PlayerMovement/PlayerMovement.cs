@@ -1,8 +1,16 @@
 using System.Collections;
+using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    #region STATE MACHINE
+
+    private StateMachine _stateMachine;
+
+    #endregion
+
     [SerializeField] private MovementData Data;
 
     #region COMPONENTS
@@ -140,6 +148,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        #region StateMachine
+
+        // Создаем машину состояний
+        _stateMachine = new StateMachine();
+
+        // Добавляем состояние я в машину;
+        //TODO Добавить состоянияни
+        // Устанавливаем начальное состояние 
+        _stateMachine.SetState<IDLE>();
+
+        #endregion
+
         // Изменяем параметр гравитации, действующей на нашего персонажа
         SetGravityScale(Data.gravityScale);
         // По умолчанию персонаж смотрит вперед
@@ -148,6 +168,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        _stateMachine.Update();
         // Запускаем наши таймеры
 
         #region TIMERS
@@ -170,7 +191,7 @@ public class PlayerMovement : MonoBehaviour
         // Если был ввод по оси x, то проверяем направление нашего персонажа
         if (_moveInput.x != 0)
         {
-            CheckDirectionToFace(_moveInput.x > 0);
+            //CheckDirectionToFace(_moveInput.x > 0);
         }
 
         // При нажатии на прыжок, запускаем наше "окно" прыжка
@@ -269,7 +290,7 @@ public class PlayerMovement : MonoBehaviour
                 IsWallJumping = false;
                 _isJumpCut = false;
                 _isJumpFalling = false;
-                Jump();
+                //Jump();
             }
             else if (CanWallJump() && LastPressedJumpTime > 0)
             {
@@ -438,7 +459,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator PerformSleep(float duration)
     {
         Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(duration); 
+        yield return new WaitForSecondsRealtime(duration);
         Time.timeScale = 1;
     }
 
@@ -595,7 +616,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    private IEnumerator RefillDash(int amount)
+    private IEnumerator RefillDash()
     {
         _dashRefilling = true;
         yield return new WaitForSeconds(Data.dashRefillTime);
@@ -625,7 +646,7 @@ public class PlayerMovement : MonoBehaviour
     private bool CanJump()
     {
         return _jumpCharge > 0 && (LastOnGroundTime > 0 && !IsJumping ||
-                 (IsJumping || _isJumpFalling) && LastOnWallTime <= 0);
+                                   (IsJumping || _isJumpFalling) && LastOnWallTime <= 0);
     }
 
     private bool CanWallJump()
@@ -670,11 +691,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void CheckDirectionToFace(bool isMovingRight)
-    {
-        if (isMovingRight != IsFacingRight)
-            Turn();
-    }
+    // public void CheckDirectionToFace(bool isMovingRight)
+    // {
+    //     if (isMovingRight != IsFacingRight)
+    //         Turn();
+    // }
 
     #endregion
 

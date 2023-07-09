@@ -985,7 +985,7 @@ GameObject:
   - component: {fileID: 1311329017}
   m_Layer: 0
   m_Name: CheckGround
-  m_TagString: Untagged
+  m_TagString: checkGround
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1018,6 +1018,7 @@ GameObject:
   - component: {fileID: 1596161842}
   - component: {fileID: 1596161841}
   - component: {fileID: 1596161840}
+  - component: {fileID: 1596161845}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -1032,7 +1033,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1596161839}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51040e0627592f849bb4a4a8da46ce63, type: 3}
   m_Name: 
@@ -1168,7 +1169,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1596161839}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.25, y: -4.62, z: 0}
+  m_LocalPosition: {x: 1.88, y: -5.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1179,6 +1180,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1596161845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596161839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0be3e179196e3741ab205605d801c15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data: {fileID: 11400000, guid: 26ce889cb6d4f974fae8d2930bc52ffd, type: 2}
+  groundCheck: {fileID: 1311329017}
 --- !u!1 &1598237161
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,7 +1205,7 @@ GameObject:
   - component: {fileID: 1598237162}
   m_Layer: 0
   m_Name: CheckRightWall
-  m_TagString: Untagged
+  m_TagString: checkRightWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1221,7 +1236,7 @@ GameObject:
   - component: {fileID: 1823558598}
   m_Layer: 0
   m_Name: CheckLeftWall
-  m_TagString: Untagged
+  m_TagString: checkLeftWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
