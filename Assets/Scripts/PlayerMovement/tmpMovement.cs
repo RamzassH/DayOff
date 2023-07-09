@@ -12,7 +12,7 @@ public class tmpMovement : MonoBehaviour
 
     public Transform groundCheck;
     private GameObject obj;
-
+    
     public void Awake()
     {
         RB = GetComponent<Rigidbody2D>();
@@ -20,9 +20,6 @@ public class tmpMovement : MonoBehaviour
         Fsm.AddState(new IDLE(Fsm, Data, RB, groundCheck, new (0.2f, 0.1f)));
         Fsm.AddState(new RunState(Fsm, RB, Data));
         Fsm.AddState(new JumpState(Fsm, Data, RB));
-        // State tmp = new DashState(Fsm, Data, RB);
-        // tmp.gameObject.AddComponent<DashState>();
-        obj.AddComponent<DashState>();
         Fsm.AddState(new DashState(Fsm, Data, RB));
     }
 

@@ -8,8 +8,8 @@ public class DashState : GroundedState
     private LayerMask _groundLayer;
 
     private bool _isDashing;
-    private Vector2 direction;
-    
+
+
     public DashState(StateMachine fsm,  MovementData Data, Rigidbody2D rb) : base(fsm, rb, Data)
     {
         _checkPosition = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
@@ -18,10 +18,12 @@ public class DashState : GroundedState
     }
     public override void Enter()
     {
-        base.Enter(); 
-        direction = IsFacingRight ? Vector2.right : Vector2.left;
-        StartCoroutine(StartDash(direction));
-        Debug.Log("Дэшусь ебать");
+        base.Enter();
+        
+        Vector2 direction = IsFacingRight ? Vector2.right : Vector2.left;
+        
+        // Проблема тут
+        StartCoroutine(StartDash(direction)); 
     }
 
     public override void Exit()
@@ -34,17 +36,17 @@ public class DashState : GroundedState
     {
         base.Update();
         _moveInput.x = Input.GetAxisRaw("Horizontal");
-
+        
         if (_moveInput.x != 0 && !_isDashing)
         {
             Fsm.SetState<RunState>();
         }
-
+        
         if (_moveInput.x == 0 && !_isDashing)
         {
             Fsm.SetState<IDLE>();
         }
-
+        
         if (IsFalling(_checkPosition.position, _checkSize, _groundLayer) &&
             !_isDashing)
         {
