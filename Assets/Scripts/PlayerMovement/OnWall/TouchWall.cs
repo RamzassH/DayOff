@@ -6,16 +6,20 @@ using UnityEngine;
 public class TouchWall : OnWall
 {
     private float _timer;
-    
-    public TouchWall(StateMachine fsm, Rigidbody2D rb, MovementData Data) : base(fsm, rb, Data)
+
+    private Vector2 _moveInput;
+    private bool _isFalling;
+
+    public TouchWall(StateMachine FSM, Rigidbody2D RB, MovementData Data,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
+        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
     {
-        
     }
 
     public override void Enter()
     {
         base.Enter();
-        _timer = 1.0f;
+        _timer = Data.slideInputBufferTime;
     }
 
     public override void Exit()
@@ -26,17 +30,52 @@ public class TouchWall : OnWall
     public override void Update()
     {
         base.Update();
-        _timer -= Time.deltaTime;
-
-        if (_timer > 0 && Input.GetKeyDown(KeyCode.Space))
-        {
-            Fsm.SetState<WallJumpState>();
-        }
+        _isFalling = IsFalling(groundCheck.position, groundCheckSize, groundLayer);
         
-        //TODO проверка на инпут в сторону текущей стены и переход в SLIDE
-        if (_timer > 0)
-        {
-            Fsm.SetState<Slide>();
-        }
+        // if (_isFalling) 
+        // {
+        //     _timer -= Time.deltaTime;
+        // }
+        //
+        // _moveInput.x = Input.GetAxisRaw("Horizontal");
+        //
+        // if (Input.GetKeyDown(KeyCode.Space) && _isFalling)
+        // {
+        //     FSM.SetState<WallJumpState>();
+        // }
+        //
+        // if (_timer > 0 && _isFalling && 
+        //     (IsTouchingRightWall() && _moveInput.x > 0 ||
+        //      !IsTouchingRightWall() && _moveInput.x < 0))
+        // {
+        //     FSM.SetState<Slide>();
+        // }
+        //
+        // if (!_isFalling &&
+        //     (IsTouchingRightWall() && _moveInput.x > 0 ||
+        //     !IsTouchingRightWall() && _moveInput.x < 0))
+        // {
+        //     FSM.SetState<Grap>();
+        // }
+        //
+        // if (_timer <= 0)
+        // {
+        //     FSM.SetState<FallingState>();
+        // }
+        //
+        // if (Input.GetKey(KeyCode.LeftShift))
+        // {
+        //     FSM.SetState<DashState>();
+        // }
+        //
+        // if (_moveInput.x != 0 && !_isFalling)
+        // {
+        //     FSM.SetState<RunState>();
+        // }
+    }
+
+    bool IsTouchingRightWall()
+    {
+        return Physics2D.OverlapBox(rightWallCheck.position, wallCheckSize, 0, groundLayer);
     }
 }

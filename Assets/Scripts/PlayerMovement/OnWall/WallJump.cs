@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class WallJumpState : State
 {
-    public WallJumpState(StateMachine fsm, Rigidbody2D rb, MovementData Data) : base(fsm, rb, Data)
+    public WallJumpState(StateMachine FSM, Rigidbody2D RB, MovementData Data,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
+        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
     {
-        
     }
+
     public override void Enter()
     {
         base.Enter();
-        //WallJump();
-        Fsm.SetState<UpState>();
+        FSM.SetState<UpState>();
     }
 
     public override void Exit()
@@ -21,4 +22,5 @@ public class WallJumpState : State
     public override void Update()
     {
         base.Update();
-    }}
+    }
+}

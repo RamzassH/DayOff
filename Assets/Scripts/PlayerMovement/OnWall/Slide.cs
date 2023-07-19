@@ -3,10 +3,13 @@ using UnityEngine;
 public class Slide : State
 {
     private Vector2 _moveInput;
-    public Slide(StateMachine fsm, Rigidbody2D rb, MovementData Data) : base(fsm, rb, Data)
+
+    public Slide(StateMachine FSM, Rigidbody2D RB, MovementData Data,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
+        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
     {
-        
     }
+
     public override void Enter()
     {
         base.Enter();
@@ -25,19 +28,18 @@ public class Slide : State
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Fsm.SetState<WallJumpState>();
+            FSM.SetState<WallJumpState>();
         }
 
         if (_moveInput.x != 0)
         {
             //TODO Проверка на упор в стену + таймер
-            Fsm.SetState<Grap>();
+            FSM.SetState<Grap>();
         }
 
         // if (!IsFalling())
         // {
         //     Fsm.SetState<IDLE>();    
         // }
-
     }
 }

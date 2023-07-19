@@ -7,8 +7,10 @@ public class UpState : AirState
     private LayerMask _groundLayer;
 
     private Vector2 _moveInput;
-    
-    public UpState(StateMachine fsm, Rigidbody2D rb, MovementData Data) : base(fsm, rb, Data)
+
+    public UpState(StateMachine FSM, Rigidbody2D RB, MovementData Data,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
+        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
     {
         _groundCheck = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
         _groundCheckSize = new Vector2(0.49f, 0.03f);
@@ -30,21 +32,25 @@ public class UpState : AirState
         base.Update();
 
         _moveInput.y = Input.GetAxisRaw("Vertical");
-        
+
+        if (IsTouchWall(rightWallCheck.position, leftWallCheck.position, wallCheckSize, groundLayer))
+        {
+            FSM.SetState<TouchWall>();
+        }
+
         if (IsFalling(_groundCheck.position, _groundCheckSize, _groundLayer))
         {
-            Fsm.SetState<FallingState>();
+            FSM.SetState<FallingState>();
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Fsm.SetState<DoubleJump>();
+            FSM.SetState<DoubleJump>();
         }
 
         if (_moveInput.y < 0)
         {
-            Fsm.SetState<JumpCutState>();
+            FSM.SetState<JumpCutState>();
         }
-        
     }
 }

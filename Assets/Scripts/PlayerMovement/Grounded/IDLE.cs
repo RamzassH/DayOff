@@ -14,7 +14,7 @@ public class IDLE : GroundedState
     private bool IsFacingRight;
 
     #endregion
-    
+
     #region Timers
 
     // Таймер последнего нахождения персонажа на земле(если больше 0, значит находится на замле, иначе - нет)
@@ -43,22 +43,21 @@ public class IDLE : GroundedState
 
     #endregion
 
-    public IDLE(StateMachine fsm, MovementData Data, Rigidbody2D RB, Transform groundCheck, Vector2 groundCheckSize) : base(fsm, RB, Data)
+    public IDLE(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
+        base(FSM, RB, Data, transform, groundCheck, leftWallCheck, leftWallCheck)
     {
         _groundCheck = groundCheck;
-        _groundCheckSize = groundCheckSize;
     }
 
     public override void Enter()
     {
         base.Enter();
-        Debug.Log("Стою хуле");
     }
 
     public override void Exit()
     {
         base.Exit();
-        Debug.Log("Не стою, получается");
     }
 
     public override void Update()
@@ -67,45 +66,35 @@ public class IDLE : GroundedState
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
         _moveInput.y = Input.GetAxisRaw("Vertical");
-
-        if (_moveInput.x != 0)
+        
+        if (IsTouchWall(rightWallCheck.position, leftWallCheck.position, wallCheckSize, groundLayer))
         {
-            Fsm.SetState<RunState>();
+            FSM.SetState<TouchWall>();
         }
         
+        if (_moveInput.x != 0)
+        {
+            FSM.SetState<RunState>();
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Fsm.SetState<JumpState>();
+            FSM.SetState<JumpState>();
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            Fsm.SetState<DashState>();
+            FSM.SetState<DashState>();
         }
+
         #endregion
 
-        
+
         base.Update();
-        Debug.Log("Все еще стою, хуле");
     }
 
     public void OnJumpInput()
     {
         LastPressedJumpTime = _data.jumpInputBufferTime;
     }
-    
-
-    // public void CheckDirectionToFace(bool isMovingRight)
-    // {
-    //     if (isMovingRight != IsFacingRight)
-    //         Turn();
-    // }
-    
-    // private void Turn()
-    // {
-    //     Vector3 scale = transform.localScale;
-    //     scale.x *= -1;
-    //     transform.localScale = scale;
-    //     IsFacingRight = !IsFacingRight;
-    // }
 }

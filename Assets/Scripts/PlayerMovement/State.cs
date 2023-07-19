@@ -1,18 +1,37 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class State : MonoBehaviour
+public abstract class State
 {
-    protected StateMachine Fsm;
+    protected StateMachine FSM;
     protected Rigidbody2D RB;
     protected MovementData Data;
 
+    protected Transform groundCheck;
+    protected Transform rightWallCheck;
+    protected Transform leftWallCheck;
+
+    protected Vector2 groundCheckSize;
+    protected Vector2 wallCheckSize;
+
+    protected LayerMask groundLayer;
+    
     protected bool IsFacingRight;
     
-    public State(StateMachine Fsm, Rigidbody2D RB, MovementData Data)
+    public State(StateMachine FSM, Rigidbody2D RB, MovementData Data,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck)
     {
-        this.Fsm = Fsm;
+        this.FSM = FSM;
         this.RB = RB;
         this.Data = Data;
+        this.groundCheck = groundCheck;
+        this.rightWallCheck = rightWallCheck;
+        this.leftWallCheck = leftWallCheck;
+
+        groundCheckSize = new Vector2(0.5f, 0.03f);
+        wallCheckSize = new Vector2(0.5f, 1f);
+
+        groundLayer = 8;
     }
 
     public virtual void Enter()
@@ -31,14 +50,16 @@ public abstract class State : MonoBehaviour
     {
     }
     
-    protected bool IsFalling(Vector2 checkPosition, Vector2 checkSize, LayerMask groundLayer)
+    protected bool IsFalling(Vector2 checkPosition, Vector2 checkSize, LayerMask groundLayerParam)
     {
-        return RB.velocity.y <= 0 && !Physics2D.OverlapBox(checkPosition, checkSize, 0, groundLayer);
+        return RB.velocity.y <= 0 && !Physics2D.OverlapBox(checkPosition, checkSize, 0, groundLayerParam);
     }
 
-    protected bool IsOnWall()
+    
+    protected bool IsTouchWall(Vector2 checkRightWallPosition, Vector2 checkLeftWallPosition, Vector2 checkSize, LayerMask groundLayerParam)
     {
-        return true;
+        return Physics2D.OverlapBox(checkRightWallPosition, checkSize, 0, groundLayerParam) ||
+               Physics2D.OverlapBox(checkLeftWallPosition, checkSize, 0, groundLayerParam);
     }
     
     protected void Run(float lerpAmount, Vector2 _moveInput)

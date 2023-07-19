@@ -62,6 +62,7 @@ public class MovementData : ScriptableObject
     [Header("Slide")]
     public float slideSpeed;
     public float slideAccel;
+    public float slideInputBufferTime;
     
     [Header("Assists")]
     [Range(0.01f, 0.5f)] public float coyoteTime; //Игрок не на земле, но в этот промежуток времени еще может прыгнуть

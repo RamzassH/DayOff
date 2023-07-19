@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class AirState : State
 {
-    public AirState(StateMachine fsm, Rigidbody2D rb, MovementData Data) : base(fsm, rb, Data)
+    public AirState(StateMachine FSM, Rigidbody2D RB, MovementData Data,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
+        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
     {
-        
     }
 
     public override void FixedUpdate()

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System;
 using Unity.VisualScripting;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class StateMachine
 {
@@ -39,5 +41,10 @@ public class StateMachine
     public void FixedUpdate()
     {
         _currentState?.FixedUpdate();
+    }
+
+    public State GetCurrentState()
+    {
+        return _currentState;
     }
 }

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class JumpCutState : State
@@ -6,7 +7,9 @@ public class JumpCutState : State
     private Vector2 _groundCheckSize;
     private LayerMask _groundLayer;
 
-    public JumpCutState(StateMachine fsm, Rigidbody2D rb, MovementData Data) : base(fsm, rb, Data)
+    public JumpCutState(StateMachine FSM, Rigidbody2D RB, MovementData Data,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
+        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
     {
     }
 
@@ -14,7 +17,7 @@ public class JumpCutState : State
     {
         base.Enter();
         JumpCut();
-        Fsm.SetState<FallingState>();
+        FSM.SetState<FallingState>();
     }
 
     public override void Exit()
@@ -24,6 +27,6 @@ public class JumpCutState : State
 
     private void JumpCut()
     {
-        
+        RB.velocity = new Vector2(RB.velocity.x, -RB.velocity.y);
     }
 }

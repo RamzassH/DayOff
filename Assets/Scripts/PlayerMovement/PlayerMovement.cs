@@ -369,10 +369,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (_isJumpCut)
             {
-                // Быстрее падаем вниз при jumpCut'е
-                SetGravityScale(Data.gravityScale * Data.jumpCutGravityMultiplier);
-                // Ограничиваем максимальную скорость падения
-                RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFastFallSpeed));
+                RB.velocity = new Vector2(RB.velocity.x, -Mathf.Max(RB.velocity.y, Data.maxFastFallSpeed));
             }
             else if ((IsJumping || IsWallJumping || _isJumpFalling) &&
                      Mathf.Abs(RB.velocity.y) < Data.jumpHangTimeThreshold)

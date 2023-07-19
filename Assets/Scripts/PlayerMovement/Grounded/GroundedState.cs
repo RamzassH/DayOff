@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GroundedState : State
 {
-    
-    public GroundedState(StateMachine fsm, Rigidbody2D rb, MovementData Data) : base(fsm, rb, Data)
+    protected Transform playerTransform;
+
+    public GroundedState(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
+        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
+        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
     {
-        
+        playerTransform = transform;
     }
 
     public override void Enter()
