@@ -12,7 +12,7 @@ public class FallingState : AirState
 
     public FallingState(StateMachine FSM, Rigidbody2D RB, MovementData Data,
         Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
+        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
     {
         _groundCheck = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
         _groundCheckSize = new Vector2(0.49f, 0.03f);

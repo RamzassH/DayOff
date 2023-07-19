@@ -12,7 +12,7 @@ public class TouchWall : OnWall
 
     public TouchWall(StateMachine FSM, Rigidbody2D RB, MovementData Data,
         Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
+        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
     {
     }
 
@@ -32,46 +32,46 @@ public class TouchWall : OnWall
         base.Update();
         _isFalling = IsFalling(groundCheck.position, groundCheckSize, groundLayer);
         
-        // if (_isFalling) 
-        // {
-        //     _timer -= Time.deltaTime;
-        // }
-        //
-        // _moveInput.x = Input.GetAxisRaw("Horizontal");
-        //
-        // if (Input.GetKeyDown(KeyCode.Space) && _isFalling)
-        // {
-        //     FSM.SetState<WallJumpState>();
-        // }
-        //
-        // if (_timer > 0 && _isFalling && 
-        //     (IsTouchingRightWall() && _moveInput.x > 0 ||
-        //      !IsTouchingRightWall() && _moveInput.x < 0))
-        // {
-        //     FSM.SetState<Slide>();
-        // }
-        //
-        // if (!_isFalling &&
-        //     (IsTouchingRightWall() && _moveInput.x > 0 ||
-        //     !IsTouchingRightWall() && _moveInput.x < 0))
-        // {
-        //     FSM.SetState<Grap>();
-        // }
-        //
-        // if (_timer <= 0)
-        // {
-        //     FSM.SetState<FallingState>();
-        // }
-        //
-        // if (Input.GetKey(KeyCode.LeftShift))
-        // {
-        //     FSM.SetState<DashState>();
-        // }
-        //
-        // if (_moveInput.x != 0 && !_isFalling)
-        // {
-        //     FSM.SetState<RunState>();
-        // }
+        if (_isFalling) 
+        {
+            _timer -= Time.deltaTime;
+        }
+        
+        _moveInput.x = Input.GetAxisRaw("Horizontal");
+        
+        if (Input.GetKeyDown(KeyCode.Space) && _isFalling)
+        {
+            FSM.SetState<WallJumpState>();
+        }
+        
+        if (_timer > 0 && _isFalling && 
+            (IsTouchingRightWall() && _moveInput.x > 0 ||
+             !IsTouchingRightWall() && _moveInput.x < 0))
+        {
+            FSM.SetState<Slide>();
+        }
+        
+        if (!_isFalling &&
+            (IsTouchingRightWall() && _moveInput.x > 0 ||
+            !IsTouchingRightWall() && _moveInput.x < 0))
+        {
+            FSM.SetState<Grap>();
+        }
+        
+        if (_timer <= 0)
+        {
+            FSM.SetState<FallingState>();
+        }
+        
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            FSM.SetState<DashState>();
+        }
+        
+        if (_moveInput.x != 0 && !_isFalling)
+        {
+            FSM.SetState<RunState>();
+        }
     }
 
     bool IsTouchingRightWall()

@@ -45,7 +45,7 @@ public class IDLE : GroundedState
 
     public IDLE(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
         Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, transform, groundCheck, leftWallCheck, leftWallCheck)
+        base(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck)
     {
         _groundCheck = groundCheck;
     }
@@ -71,7 +71,7 @@ public class IDLE : GroundedState
         {
             FSM.SetState<TouchWall>();
         }
-        
+
         if (_moveInput.x != 0)
         {
             FSM.SetState<RunState>();

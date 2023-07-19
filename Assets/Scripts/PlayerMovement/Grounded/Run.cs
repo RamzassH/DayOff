@@ -18,7 +18,7 @@ public class RunState : GroundedState
 
     public RunState(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
         Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, transform, groundCheck, leftWallCheck, leftWallCheck)
+        base(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck)
     {
         _data = Data;
         _checkPosition = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
