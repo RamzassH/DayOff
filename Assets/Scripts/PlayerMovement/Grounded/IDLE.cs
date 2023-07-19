@@ -71,7 +71,7 @@ public class IDLE : GroundedState
         {
             FSM.SetState<TouchWall>();
         }
-        
+
         if (_moveInput.x != 0)
         {
             FSM.SetState<RunState>();
