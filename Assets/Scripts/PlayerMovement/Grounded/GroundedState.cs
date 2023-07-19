@@ -9,7 +9,7 @@ public class GroundedState : State
 
     public GroundedState(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
         Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
+        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
     {
         playerTransform = transform;
     }

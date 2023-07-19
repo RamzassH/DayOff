@@ -6,7 +6,7 @@ public class Slide : State
 
     public Slide(StateMachine FSM, Rigidbody2D RB, MovementData Data,
         Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, leftWallCheck, leftWallCheck)
+        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
     {
     }
 

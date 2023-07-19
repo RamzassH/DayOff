@@ -10,7 +10,7 @@ public class JumpState : GroundedState
 
     public JumpState(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
         Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, transform, groundCheck, leftWallCheck, leftWallCheck)
+        base(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck)
     {
         _checkPosition = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
         _groundCheckSize = new Vector2(0.49f, 0.03f);
