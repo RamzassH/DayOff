@@ -1,18 +1,21 @@
 using UnityEngine;
 
-public class Slide : State
+public class SlideState : OnWall
 {
     private Vector2 _moveInput;
 
-    public Slide(StateMachine FSM, Rigidbody2D RB, MovementData Data,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
+    private bool _isTouchRightWall;
+    private bool _isTouchLeftWall;
+    public SlideState(tmpMovement playerMovement) :
+        base(playerMovement)
     {
     }
 
     public override void Enter()
     {
         base.Enter();
+        _isTouchRightWall = IsTouchingRightWall();
+        _isTouchLeftWall = IsTouchingLeftWall();
     }
 
     public override void Exit()
@@ -26,20 +29,41 @@ public class Slide : State
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
 
+        if (_moveInput.x == 0)
+        {
+            FSM.SetState<TouchWall>();
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             FSM.SetState<WallJumpState>();
         }
 
-        if (_moveInput.x != 0)
+        if (RB.velocity.y >= 0 &&
+            (_isTouchRightWall && _moveInput.x > 0 || 
+            _isTouchLeftWall && _moveInput.x < 0))
         {
-            //TODO Проверка на упор в стену + таймер
-            FSM.SetState<Grap>();
+            FSM.SetState<GrapState>();
         }
-
-        // if (!IsFalling())
-        // {
-        //     Fsm.SetState<IDLE>();    
-        // }
     }
+
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        
+        Slide();
+    }
+
+
+    private void Slide()
+    {
+        float speedDif = Data.slideSpeed - RB.velocity.y;
+        float movement = speedDif * Data.slideAccel;
+
+        movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime),
+            Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
+
+        RB.AddForce(movement * Vector2.up);
+    } 
 }

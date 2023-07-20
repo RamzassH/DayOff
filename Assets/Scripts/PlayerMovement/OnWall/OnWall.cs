@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class OnWall : State
 {
-    public OnWall(StateMachine FSM, Rigidbody2D RB, MovementData Data,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
+    public OnWall(tmpMovement playerMovement) :
+        base(playerMovement)
     {
     }
 
@@ -21,5 +20,14 @@ public class OnWall : State
     public override void Update()
     {
         base.Update();
+    }
+    
+    protected bool IsTouchingRightWall()
+    {
+        return Physics2D.OverlapBox(playerMovement.rightWallCheck.position, wallCheckSize, 0, groundLayer);
+    }
+    protected bool IsTouchingLeftWall()
+    {
+        return Physics2D.OverlapBox(playerMovement.leftWallCheck.position, wallCheckSize, 0, groundLayer);
     }
 }

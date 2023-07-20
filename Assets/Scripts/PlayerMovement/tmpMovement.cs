@@ -10,8 +10,8 @@ using UnityEngine.UI;
 public class tmpMovement : MonoBehaviour
 {
     public MovementData Data;
-    private StateMachine FSM;
-    private Rigidbody2D RB;
+    private StateMachine _FSM;
+    private Rigidbody2D _RB;
 
     public Transform groundCheck;
     public Transform rightWallCheck;
@@ -21,66 +21,91 @@ public class tmpMovement : MonoBehaviour
     
     private GameObject obj;
     
-    [SerializeField] private GameObject _coroutinePrefab;
 
     public void Awake()
     {
-        RB = GetComponent<Rigidbody2D>();
-        FSM = new StateMachine();
+        _RB = GetComponent<Rigidbody2D>();
+        _FSM = new StateMachine();
+
+        #region GRAVITY
+
+        _RB.gravityScale = Data.gravityScale;
+
+        #endregion
 
         #region GROUND
 
-        FSM.AddState(new IDLE(FSM, RB, Data, transform, groundCheck,rightWallCheck, leftWallCheck));
-        FSM.AddState(new RunState(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new JumpState(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new DashState(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck));
+        _FSM.AddState(new IDLE(this));
+        _FSM.AddState(new RunState(this));
+        _FSM.AddState(new JumpState(this));
+        _FSM.AddState(new DashState(this));
         
         #endregion
         
         #region AIR
 
-        FSM.AddState(new UpState(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new DoubleJump(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new DoubleJumpUpState(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new FallingState(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new JumpCutState(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
+        _FSM.AddState(new UpState(this));
+        _FSM.AddState(new DoubleJump(this));
+        _FSM.AddState(new DoubleJumpUpState(this));
+        _FSM.AddState(new FallingState(this));
+        _FSM.AddState(new JumpCutState(this));
         
         #endregion
 
         #region ON WALL
 
-        FSM.AddState(new TouchWall(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new OnWall(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new Grap(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new Slide(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
-        FSM.AddState(new WallJumpState(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck));
+        _FSM.AddState(new TouchWall(this));
+        _FSM.AddState(new OnWall(this));
+        _FSM.AddState(new GrapState(this));
+        _FSM.AddState(new SlideState(this));
+        _FSM.AddState(new WallJumpState(this));
         
         #endregion
     }
 
     void Start()
     {
-        FSM.SetState<IDLE>();
+        _FSM.SetState<IDLE>();
     }
     
     void Update()
     {
-        FSM.Update();
-        text.text = FSM.GetCurrentState().ToString();
+        _FSM.Update();
+        text.text = _FSM.GetCurrentState().ToString();
     }
 
     private void FixedUpdate()
     {
-        FSM.FixedUpdate();
+        _FSM.FixedUpdate();
+    }
+
+
+    public StateMachine FSM
+    {
+        get { return _FSM; }
     }
     
+    public Rigidbody2D RB
+    {
+        get { return _RB; }
+    }
+
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawCube(groundCheck.position, new Vector2(0.5f, 0.03f));
         Gizmos.color = Color.cyan;
-        Gizmos.DrawCube(rightWallCheck.position, new Vector2(0.5f, 1f));
-        Gizmos.DrawCube(leftWallCheck.position, new Vector2(0.5f, 1f));
+        Gizmos.DrawCube(rightWallCheck.position, new Vector2(0.03f, 1f));
+        Gizmos.DrawCube(leftWallCheck.position, new Vector2(0.03f, 1f));
+    }
 
+    public void ChangeDirection()
+    {
+        if (this.rightWallCheck.position.x < this.leftWallCheck.position.x)
+        {
+            var tmp = rightWallCheck;
+            rightWallCheck = leftWallCheck;
+            leftWallCheck = tmp;
+        } 
     }
 }

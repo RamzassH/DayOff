@@ -16,9 +16,8 @@ public class RunState : GroundedState
 
     #endregion
 
-    public RunState(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck)
+    public RunState(tmpMovement playerMovement) :
+        base(playerMovement)
     {
         _data = Data;
         _checkPosition = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
@@ -43,12 +42,7 @@ public class RunState : GroundedState
         #region Input
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
-        
-        if (IsTouchWall(rightWallCheck.position, leftWallCheck.position, wallCheckSize, groundLayer))
-        {
-            FSM.SetState<TouchWall>();
-        }
-        
+
         if (_moveInput.x > 0)
         {
             playerTransform.localScale = new Vector3(1, 1, 1);
@@ -57,6 +51,9 @@ public class RunState : GroundedState
         {
             playerTransform.localScale = new Vector3(-1, 1, 1);
         }
+        
+        playerMovement.ChangeDirection();
+        
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -66,6 +63,11 @@ public class RunState : GroundedState
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             FSM.SetState<DashState>();
+        }
+        
+        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
+        {
+            FSM.SetState<TouchWall>();
         }
 
         #endregion

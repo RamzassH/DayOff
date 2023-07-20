@@ -43,11 +43,10 @@ public class IDLE : GroundedState
 
     #endregion
 
-    public IDLE(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck)
+    public IDLE(tmpMovement playerMovement) :
+        base(playerMovement)
     {
-        _groundCheck = groundCheck;
+        _groundCheck = playerMovement.groundCheck;
     }
 
     public override void Enter()
@@ -67,7 +66,7 @@ public class IDLE : GroundedState
         _moveInput.x = Input.GetAxisRaw("Horizontal");
         _moveInput.y = Input.GetAxisRaw("Vertical");
         
-        if (IsTouchWall(rightWallCheck.position, leftWallCheck.position, wallCheckSize, groundLayer))
+        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
         {
             FSM.SetState<TouchWall>();
         }
