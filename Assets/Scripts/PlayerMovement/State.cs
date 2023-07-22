@@ -29,7 +29,7 @@ public abstract class State
         this.leftWallCheck = leftWallCheck;
 
         groundCheckSize = new Vector2(0.5f, 0.03f);
-        wallCheckSize = new Vector2(0.5f, 1f);
+        wallCheckSize = new Vector2(0.03f, 1f);
 
         groundLayer = 8;
     }

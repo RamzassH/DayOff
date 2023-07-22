@@ -30,7 +30,7 @@ public class tmpMovement : MonoBehaviour
 
         #region GROUND
 
-        FSM.AddState(new IDLE(FSM, RB, Data, transform, groundCheck,rightWallCheck, leftWallCheck));
+        FSM.AddState(new IDLE(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck));
         FSM.AddState(new RunState(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck));
         FSM.AddState(new JumpState(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck));
         FSM.AddState(new DashState(FSM, RB, Data, transform, groundCheck, rightWallCheck, leftWallCheck));
@@ -79,8 +79,10 @@ public class tmpMovement : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawCube(groundCheck.position, new Vector2(0.5f, 0.03f));
         Gizmos.color = Color.cyan;
-        Gizmos.DrawCube(rightWallCheck.position, new Vector2(0.5f, 1f));
-        Gizmos.DrawCube(leftWallCheck.position, new Vector2(0.5f, 1f));
+        Gizmos.DrawCube(rightWallCheck.position, new Vector2(0.03f, 1f));
+        Gizmos.DrawCube(leftWallCheck.position, new Vector2(0.03f, 1f));
 
     }
+
+
 }
