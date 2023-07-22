@@ -1,12 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GrapState : OnWall
 {
-    private Vector2 _moveInput;
-
     private bool _isTouchRightWall;
     private bool _isTouchLeftWall;
 

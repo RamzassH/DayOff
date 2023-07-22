@@ -2,18 +2,9 @@ using UnityEngine;
 
 public class JumpState : GroundedState
 {
-    private Vector2 _moveInput;
-
-    private Transform _checkPosition;
-    private Vector2 _groundCheckSize;
-    private LayerMask _groundLayer;
-
     public JumpState(tmpMovement playerMovement) :
         base(playerMovement)
     {
-        _checkPosition = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
-        _groundCheckSize = new Vector2(0.49f, 0.03f);
-        _groundLayer = 8;
     }
 
     public override void Enter()

@@ -1,28 +1,14 @@
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class RunState : GroundedState
 {
-    private MovementData _data;
-
-    private Transform _checkPosition;
-    private Vector2 _checkSize;
-    private LayerMask _groundLayer;
-
     #region INPUT PARAMETERS
-
-    private Vector2 _moveInput;
 
     #endregion
 
     public RunState(tmpMovement playerMovement) :
         base(playerMovement)
     {
-        _data = Data;
-        _checkPosition = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
-        _checkSize = new Vector2(0.49f, 0.03f);
-        _groundLayer = 8;
     }
 
     public override void Enter()
@@ -65,7 +51,7 @@ public class RunState : GroundedState
             FSM.SetState<DashState>();
         }
         
-        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
+        if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
         }
@@ -79,7 +65,7 @@ public class RunState : GroundedState
             FSM.SetState<IDLE>();
         }
 
-        if (IsFalling(_checkPosition.position, _checkSize, _groundLayer))
+        if (IsFalling())
         {
             FSM.SetState<FallingState>();
         }

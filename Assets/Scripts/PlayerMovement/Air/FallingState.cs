@@ -4,18 +4,9 @@ using UnityEngine;
 
 public class FallingState : AirState
 {
-    private Transform _groundCheck;
-    private Vector2 _groundCheckSize;
-    private LayerMask _groundLayer;
-
-    private Vector2 _moveInput;
-
     public FallingState(tmpMovement playerMovement) :
         base(playerMovement)
     {
-        _groundCheck = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
-        _groundCheckSize = new Vector2(0.49f, 0.03f);
-        _groundLayer = 8;
     }
 
 
@@ -31,12 +22,12 @@ public class FallingState : AirState
 
     public override void Update()
     {
-        if (!IsFalling(_groundCheck.position, _groundCheckSize, _groundLayer))
+        if (!IsFalling())
         {
             FSM.SetState<IDLE>();
         }
 
-        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
+        if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
         }

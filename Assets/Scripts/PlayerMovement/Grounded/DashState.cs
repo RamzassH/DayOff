@@ -1,28 +1,20 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class DashState : GroundedState
 {
-    private Vector2 _moveInput;
-    private Transform _checkPosition;
-    private Vector2 _checkSize;
-
     private bool _isDashing;
-    private Vector2 direction;
 
     public DashState(tmpMovement playerMovement) :
         base(playerMovement)
     {
-        _checkPosition = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
-        _checkSize = new Vector2(0.49f, 0.03f);
     }
 
     public override void Enter()
     {
         base.Enter();
-        direction = new Vector2(playerTransform.localScale.x, 0);
-        Coroutines.StartRoutine(StartDash(direction));
+        Vector2 direction = new Vector2(playerTransform.localScale.x, 0);
+        playerMovement.StartCoroutine(StartDash(direction));
     }
 
     public override void Exit()
@@ -35,7 +27,7 @@ public class DashState : GroundedState
         base.Update();
         _moveInput.x = Input.GetAxisRaw("Horizontal");
 
-        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
+        if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
         }
@@ -50,7 +42,7 @@ public class DashState : GroundedState
             FSM.SetState<IDLE>();
         }
 
-        if (IsFalling(_checkPosition.position, _checkSize, groundLayer) &&
+        if (IsInAir() &&
             !_isDashing)
         {
             FSM.SetState<FallingState>();

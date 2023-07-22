@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class DoubleJump : State
 {
-    private Vector2 _moveInput;
-
     public DoubleJump(tmpMovement playerMovement) :
         base(playerMovement)
     {

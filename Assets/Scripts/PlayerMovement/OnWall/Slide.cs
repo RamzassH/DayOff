@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class SlideState : OnWall
 {
-    private Vector2 _moveInput;
-
     private bool _isTouchRightWall;
     private bool _isTouchLeftWall;
     public SlideState(tmpMovement playerMovement) :

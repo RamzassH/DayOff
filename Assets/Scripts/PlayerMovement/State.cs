@@ -14,6 +14,8 @@ public abstract class State
 
     protected LayerMask groundLayer;
     
+    protected Vector2 _moveInput;
+
     protected bool IsFacingRight;
     
     public State(tmpMovement playerMovement)
@@ -45,16 +47,25 @@ public abstract class State
     {
     }
     
-    protected bool IsFalling(Vector2 checkPosition, Vector2 checkSize, LayerMask groundLayerParam)
+    protected bool IsFalling()
     {
-        return RB.velocity.y <= 0 && !Physics2D.OverlapBox(checkPosition, checkSize, 0, groundLayerParam);
+        return RB.velocity.y <= 0 && !Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+            0, groundLayer);
+    }
+
+    protected bool IsInAir()
+    {
+        return !Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+            0, groundLayer);
     }
 
     
-    protected bool IsTouchWall(Vector2 checkRightWallPosition, Vector2 checkLeftWallPosition, Vector2 checkSize, LayerMask groundLayerParam)
+    protected bool IsTouchWall()
     {
-        return Physics2D.OverlapBox(checkRightWallPosition, checkSize, 0, groundLayerParam) ||
-               Physics2D.OverlapBox(checkLeftWallPosition, checkSize, 0, groundLayerParam);
+        return Physics2D.OverlapBox(playerMovement.rightWallCheck.position, wallCheckSize,
+                   0, groundLayer) ||
+               Physics2D.OverlapBox(playerMovement.leftWallCheck.position, wallCheckSize,
+                   0, groundLayer);
     }
     
     protected void Run(float lerpAmount, Vector2 _moveInput)

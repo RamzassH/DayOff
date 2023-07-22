@@ -1,18 +1,10 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class IDLE : GroundedState
 {
-    private Rigidbody2D _rb;
-    private MovementData _data;
-
-    private Transform _groundCheck;
-    private Vector2 _groundCheckSize;
-
+    
     #region States
-
-    private bool IsFacingRight;
-
+    
     #endregion
 
     #region Timers
@@ -32,9 +24,7 @@ public class IDLE : GroundedState
     #endregion
 
     #region INPUT PARAMETERS
-
-    private Vector2 _moveInput;
-
+    
     // Таймер послденего считывания кнопки "прыжка"
     public float LastPressedJumpTime { get; private set; }
 
@@ -46,7 +36,6 @@ public class IDLE : GroundedState
     public IDLE(tmpMovement playerMovement) :
         base(playerMovement)
     {
-        _groundCheck = playerMovement.groundCheck;
     }
 
     public override void Enter()
@@ -66,7 +55,7 @@ public class IDLE : GroundedState
         _moveInput.x = Input.GetAxisRaw("Horizontal");
         _moveInput.y = Input.GetAxisRaw("Vertical");
         
-        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
+        if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
         }
@@ -94,6 +83,6 @@ public class IDLE : GroundedState
 
     public void OnJumpInput()
     {
-        LastPressedJumpTime = _data.jumpInputBufferTime;
+        LastPressedJumpTime = playerMovement.Data.jumpInputBufferTime;
     }
 }
