@@ -7,11 +7,10 @@ public class GroundedState : State
 {
     protected Transform playerTransform;
 
-    public GroundedState(StateMachine FSM, Rigidbody2D RB, MovementData Data, Transform transform,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
+    public GroundedState(tmpMovement playerMovement) :
+        base(playerMovement)
     {
-        playerTransform = transform;
+        playerTransform = playerMovement.transform;
     }
 
     public override void Enter()

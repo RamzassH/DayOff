@@ -7,9 +7,8 @@ public class JumpCutState : State
     private Vector2 _groundCheckSize;
     private LayerMask _groundLayer;
 
-    public JumpCutState(StateMachine FSM, Rigidbody2D RB, MovementData Data,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
+    public JumpCutState(tmpMovement playerMovement) :
+        base(playerMovement)
     {
     }
 

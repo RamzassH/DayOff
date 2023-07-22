@@ -60,8 +60,9 @@ public class MovementData : ScriptableObject
     [Space(20)]
     
     [Header("Slide")]
-    public float slideSpeed;
     public float slideAccel;
+    public float slideSpeed;
+    public float slideEndSpeed;
     public float slideInputBufferTime;
     
     [Header("Assists")]

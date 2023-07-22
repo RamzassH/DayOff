@@ -8,9 +8,8 @@ public class UpState : AirState
 
     private Vector2 _moveInput;
 
-    public UpState(StateMachine FSM, Rigidbody2D RB, MovementData Data,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
+    public UpState(tmpMovement playerMovement) :
+        base(playerMovement)
     {
         _groundCheck = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
         _groundCheckSize = new Vector2(0.49f, 0.03f);
@@ -33,7 +32,7 @@ public class UpState : AirState
 
         _moveInput.y = Input.GetAxisRaw("Vertical");
 
-        if (IsTouchWall(rightWallCheck.position, leftWallCheck.position, wallCheckSize, groundLayer))
+        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
         {
             FSM.SetState<TouchWall>();
         }

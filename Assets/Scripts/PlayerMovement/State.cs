@@ -7,9 +7,7 @@ public abstract class State
     protected Rigidbody2D RB;
     protected MovementData Data;
 
-    protected Transform groundCheck;
-    protected Transform rightWallCheck;
-    protected Transform leftWallCheck;
+    protected tmpMovement playerMovement;
 
     protected Vector2 groundCheckSize;
     protected Vector2 wallCheckSize;
@@ -18,15 +16,12 @@ public abstract class State
     
     protected bool IsFacingRight;
     
-    public State(StateMachine FSM, Rigidbody2D RB, MovementData Data,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck)
+    public State(tmpMovement playerMovement)
     {
-        this.FSM = FSM;
-        this.RB = RB;
-        this.Data = Data;
-        this.groundCheck = groundCheck;
-        this.rightWallCheck = rightWallCheck;
-        this.leftWallCheck = leftWallCheck;
+        FSM = playerMovement.FSM;
+        RB = playerMovement.RB;
+        Data = playerMovement.Data;
+        this.playerMovement = playerMovement;
 
         groundCheckSize = new Vector2(0.5f, 0.03f);
         wallCheckSize = new Vector2(0.03f, 1f);

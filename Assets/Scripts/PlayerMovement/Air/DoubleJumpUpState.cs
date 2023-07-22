@@ -6,9 +6,8 @@ public class DoubleJumpUpState : AirState
     private Vector2 _groundCheckSize;
     private LayerMask _groundLayer;
 
-    public DoubleJumpUpState(StateMachine FSM, Rigidbody2D RB, MovementData Data,
-        Transform groundCheck, Transform rightWallCheck, Transform leftWallCheck) :
-        base(FSM, RB, Data, groundCheck, rightWallCheck, leftWallCheck)
+    public DoubleJumpUpState(tmpMovement playerMovement) :
+        base(playerMovement)
     {
         _groundCheck = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
         _groundCheckSize = new Vector2(0.49f, 0.03f);
@@ -29,7 +28,7 @@ public class DoubleJumpUpState : AirState
     {
         base.Update();
         
-        if (IsTouchWall(rightWallCheck.position, leftWallCheck.position, wallCheckSize, groundLayer))
+        if (IsTouchWall(playerMovement.rightWallCheck.position,playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
         {
             FSM.SetState<TouchWall>();
         }

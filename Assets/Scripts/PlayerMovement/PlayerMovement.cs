@@ -627,13 +627,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void Slide()
     {
-        float speedDif = Data.slideSpeed - RB.velocity.y;
-        float movement = speedDif * Data.slideAccel;
-
-        movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime),
-            Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
-
-        RB.AddForce(movement * Vector2.up);
+        // float speedDif = Data.slideSpeed - RB.velocity.y;
+        // float movement = speedDif * Data.slideAccel;
+        //
+        // movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime),
+        //     Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
+        //
+        // RB.AddForce(movement * Vector2.up);
     }
 
     #endregion
