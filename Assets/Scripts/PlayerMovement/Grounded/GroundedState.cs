@@ -32,8 +32,7 @@ public class GroundedState : State
     public override void Update()
     {
         base.Update();
-        bool isFalling = IsFalling(playerMovement.groundCheck.position,
-            groundCheckSize, groundLayer);
+        bool isFalling = IsFalling();
         if (Input.GetAxis("Fire1") > 0f && !isFalling && 
             (this is IDLE || this is RunState)) 
         {

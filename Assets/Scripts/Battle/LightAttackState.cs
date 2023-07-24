@@ -35,10 +35,6 @@ public class LightAttackState : BattleState
             {
                 playerMovement.IncreaseComboIndex();
             }
-            else if (playerMovement.ChangeCombo(ComboEvents.LightAttack))
-            {
-                playerMovement.SetCurrentCombo(ComboEvents.LightAttack);
-            }
             else
             {
                 playerMovement.SetCurrentCombo(ComboEvents.LightAttack);
@@ -53,10 +49,6 @@ public class LightAttackState : BattleState
             {
                 playerMovement.IncreaseComboIndex();
             }
-            else if (playerMovement.ChangeCombo(ComboEvents.HeavyAttack))
-            {
-                playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
-            }
             else 
             {
                 playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
@@ -67,7 +59,7 @@ public class LightAttackState : BattleState
         
         if (_timer >= _endAttackTime)
         {
-            playerMovement.ResetCombo();
+            playerMovement.SetNullCombo();
             FSM.SetState<BattleIDLEState>();
             return;
         }
