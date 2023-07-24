@@ -3,10 +3,7 @@ using UnityEngine;
 
 public class JumpCutState : State
 {
-    private Transform _groundCheck;
-    private Vector2 _groundCheckSize;
-    private LayerMask _groundLayer;
-
+    
     public JumpCutState(tmpMovement playerMovement) :
         base(playerMovement)
     {

@@ -4,22 +4,18 @@ using UnityEngine;
 
 public class HeavyAttackState : BattleState
 {
-    private float _duration;
-    private float _startTime;
-    private bool _isInput;
-    private bool _isInputLightAttack;
-    private bool _isInputHeavyAttack;
+    private float _endAttackTime;
+    private float _nextAttackInputBuffer;
+    private float _timer;
 
     public HeavyAttackState(tmpMovement tmp): base(tmp) { }
 
     public override void Enter()
     {
         base.Enter();
-        _duration = 0.5f;    
-        _startTime = 0.1f;
-        _isInput = false;
-        _isInputLightAttack = false;
-        _isInputHeavyAttack = false;
+        _endAttackTime = 0.5f;
+        _nextAttackInputBuffer = 0.3f;
+        _timer = 0f;
     }
 
     public override void Exit() { base.Exit();}
@@ -27,19 +23,17 @@ public class HeavyAttackState : BattleState
     public override void Update()
     {
         base.Update();
-        _duration -= Time.deltaTime;
-        _startTime -= Time.deltaTime;
-        if (_duration < 0 && !_isInput)
-        {
-            playerMovement.SetNullCombo();
-            FSM.SetState<BattleIDLEState>();
-            return;
-        }
-        if (_duration < 0 && _isInputLightAttack) 
+        _timer += Time.deltaTime;
+        
+        if (Input.GetAxis("Fire1") > 0 && _timer >= _nextAttackInputBuffer)
         {
             if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.LightAttack))
             {
-                playerMovement.IncreaseIndexCombo();
+                playerMovement.IncreaseComboIndex();
+            }
+            else if (playerMovement.ChangeCombo(ComboEvents.LightAttack))
+            {
+                playerMovement.SetCurrentCombo(ComboEvents.LightAttack);
             }
             else
             {
@@ -48,11 +42,16 @@ public class HeavyAttackState : BattleState
             FSM.SetState<LightAttackState>();
             return;
         }
-        if (_duration < 0 && _isInputHeavyAttack) 
+
+        if (Input.GetAxis("Fire2") > 0 && _timer >= _nextAttackInputBuffer)
         {
             if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.HeavyAttack))
             {
-                playerMovement.IncreaseIndexCombo();
+                playerMovement.IncreaseComboIndex();
+            }
+            else if (playerMovement.ChangeCombo(ComboEvents.HeavyAttack))
+            {
+                playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
             }
             else
             {
@@ -61,37 +60,11 @@ public class HeavyAttackState : BattleState
             FSM.SetState<HeavyAttackState>();
             return;
         }
-
-
-        if (Input.GetAxis("Fire1") > 0 && !_isInput && _startTime < 0f)
+        
+        if (_timer >= _endAttackTime)
         {
-            //if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.LightAttack))
-            //{
-            //    playerMovement.IncreaseIndexCombo();
-            //}
-            //else
-            //{
-            //    playerMovement.SetCurrentCombo(ComboEvents.LightAttack);
-            //}
-            //FSM.SetState<LightAttackState>();
-            _isInput = true;
-            _isInputLightAttack = true;
-            return;
-        }
-
-        if (Input.GetAxis("Fire2") > 0 && !_isInput && _startTime < 0f)
-        {
-            //if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.HeavyAttack))
-            //{
-            //    playerMovement.IncreaseIndexCombo();
-            //}
-            //else
-            //{
-            //    playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
-            //}
-            //FSM.SetState<HeavyAttackState>();
-            _isInput = true;
-            _isInputHeavyAttack = true;
+            playerMovement.ResetCombo();
+            FSM.SetState<BattleIDLEState>();
             return;
         }
 

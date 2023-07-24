@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TouchWall : OnWall
 {
-    private Vector2 _moveInput;
+    private bool _isInAir;
     private bool _isFalling;
 
     public TouchWall(tmpMovement playerMovement) :
@@ -26,34 +23,43 @@ public class TouchWall : OnWall
     public override void Update()
     {
         base.Update();
-        _isFalling = IsFalling(playerMovement.groundCheck.position, groundCheckSize, groundLayer);
-        
+        _isInAir = IsInAir();
+        _isFalling = IsFalling();
+
         _moveInput.x = Input.GetAxisRaw("Horizontal");
 
-        if (!_isFalling &&
+        bool isTouchingRightWall = IsTouchingRightWall();
+        bool isTouchingLeftWall = IsTouchingLeftWall();
+        
+        if (IsCanClimb() && 
+            (isTouchingRightWall && _moveInput.x > 0 ||
+             isTouchingLeftWall && _moveInput.x < 0))
+        {
+            FSM.SetState<UpOnLedge>();
+            return;
+        }
+        
+        if (!_isInAir &&
             Input.GetKeyDown(KeyCode.Space))
         {
             FSM.SetState<JumpState>();
             return;
         }
-        
-        if (Input.GetKeyDown(KeyCode.Space) && _isFalling)
+
+        if (Input.GetKeyDown(KeyCode.Space) && _isInAir)
         {
             FSM.SetState<WallJumpState>();
             return;
         }
 
-        bool isTouchingRightWall = IsTouchingRightWall();
-        bool isTouchingLeftWall = IsTouchingLeftWall();
-        
-        if (_isFalling && 
+        if (_isFalling &&
             (isTouchingRightWall && _moveInput.x > 0 ||
              isTouchingLeftWall && _moveInput.x < 0))
         {
             FSM.SetState<SlideState>();
             return;
         }
-        
+
         if (!_isFalling &&
             (isTouchingRightWall && _moveInput.x > 0 ||
              isTouchingLeftWall && _moveInput.x < 0))
@@ -61,26 +67,25 @@ public class TouchWall : OnWall
             FSM.SetState<GrapState>();
             return;
         }
-        
-        if (_isFalling && 
-            !isTouchingRightWall && 
+
+        if (_isFalling &&
+            !isTouchingRightWall &&
             !isTouchingLeftWall)
         {
             FSM.SetState<FallingState>();
             return;
         }
-        
+
         if (Input.GetKey(KeyCode.LeftShift))
         {
             FSM.SetState<DashState>();
             return;
         }
-        
-        if (_moveInput.x != 0 && !_isFalling)
+
+        if (_moveInput.x != 0 && !IsInAir())
         {
             FSM.SetState<RunState>();
             return;
         }
     }
-    
 }

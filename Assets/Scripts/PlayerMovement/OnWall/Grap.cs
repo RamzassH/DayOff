@@ -1,12 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GrapState : OnWall
 {
-    private Vector2 _moveInput;
-
     private bool _isTouchRightWall;
     private bool _isTouchLeftWall;
 
@@ -33,6 +28,13 @@ public class GrapState : OnWall
     public override void Update()
     {
         base.Update();
+
+        #region TIMERS
+
+        playerMovement.coyoteTime -= Time.deltaTime;
+
+        #endregion
+
         _moveInput.x = Input.GetAxisRaw("Horizontal");
 
         if (!(_isTouchRightWall && _moveInput.x > 0 ||

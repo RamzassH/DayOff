@@ -14,13 +14,15 @@ public abstract class State
 
     protected LayerMask groundLayer;
     
+    protected Vector2 _moveInput;
+
     protected bool IsFacingRight;
     
     public State(tmpMovement playerMovement)
     {
         FSM = playerMovement.FSM;
         RB = playerMovement.RB;
-        Data = playerMovement.Data;
+        Data = playerMovement.data;
         this.playerMovement = playerMovement;
 
         groundCheckSize = new Vector2(0.5f, 0.03f);
@@ -45,16 +47,38 @@ public abstract class State
     {
     }
     
-    protected bool IsFalling(Vector2 checkPosition, Vector2 checkSize, LayerMask groundLayerParam)
+    protected bool IsFalling()
     {
-        return RB.velocity.y <= 0 && !Physics2D.OverlapBox(checkPosition, checkSize, 0, groundLayerParam);
+        return RB.velocity.y <= 0 && !Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+            0, groundLayer);
+    }
+
+    protected bool IsCanClimb()
+    {
+        float distance = 0.5f;
+        return !Physics2D.Raycast(playerMovement.headRayCastPos.position, playerMovement.transform.forward,
+            distance, groundLayer);
+    }
+
+    protected bool IsGrounded()
+    {
+        return Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+            0, groundLayer);
+    }
+
+    protected bool IsInAir()
+    {
+        return !Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+            0, groundLayer);
     }
 
     
-    protected bool IsTouchWall(Vector2 checkRightWallPosition, Vector2 checkLeftWallPosition, Vector2 checkSize, LayerMask groundLayerParam)
+    protected bool IsTouchWall()
     {
-        return Physics2D.OverlapBox(checkRightWallPosition, checkSize, 0, groundLayerParam) ||
-               Physics2D.OverlapBox(checkLeftWallPosition, checkSize, 0, groundLayerParam);
+        return Physics2D.OverlapBox(playerMovement.rightWallCheck.position, wallCheckSize,
+                   0, groundLayer) ||
+               Physics2D.OverlapBox(playerMovement.leftWallCheck.position, wallCheckSize,
+                   0, groundLayer);
     }
     
     protected void Run(float lerpAmount, Vector2 _moveInput)
@@ -104,6 +128,20 @@ public abstract class State
         // }
         //
         // #endregion
-        
+    }
+    
+    public void OnJumpInput()
+    {
+        playerMovement.LastPressedJumpTime = playerMovement.data.jumpInputBufferTime;
+    }
+
+    public void OnDashInput()
+    {
+        playerMovement.LastPressedDashTime = playerMovement.data.dashInputBufferTime;
+    }
+
+    public void RechargeCoyoteTime()
+    {
+        playerMovement.coyoteTime = playerMovement.data.coyoteTime;
     }
 }

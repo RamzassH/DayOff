@@ -9,9 +9,9 @@ public class Combo : ScriptableObject
     public string _name;
     public List<ComboEvents> _inputs;
 
-    public ComboEvents GetActionInIndex(int index) 
+    public ComboEvents GetActionByIndex(int index) 
     {
-        if (index > -1 && index < _inputs.Count) 
+        if (index >= 0 && index < _inputs.Count) 
         { 
             return _inputs[index];
         }

@@ -1,52 +1,10 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class IDLE : GroundedState
 {
-    private Rigidbody2D _rb;
-    private MovementData _data;
-
-    private Transform _groundCheck;
-    private Vector2 _groundCheckSize;
-
-    #region States
-
-    private bool IsFacingRight;
-
-    #endregion
-
-    #region Timers
-
-    // Таймер последнего нахождения персонажа на земле(если больше 0, значит находится на замле, иначе - нет)
-    public float LastOnGroundTime { get; private set; }
-
-    // Таймер последнего нахождения персонажа на стене(если больше 0, значит находится на замле, иначе - нет)
-    public float LastOnWallTime { get; private set; }
-
-    // Таймер последнего нахождения персонажа на правой стене(если больше 0, значит находится на замле, иначе - нет)
-    public float LastOnWallRightTime { get; private set; }
-
-    // Таймер последнего нахождения персонажа на левой стене(если больше 0, значит находится на замле, иначе - нет)
-    public float LastOnWallLeftTime { get; private set; }
-
-    #endregion
-
-    #region INPUT PARAMETERS
-
-    private Vector2 _moveInput;
-
-    // Таймер послденего считывания кнопки "прыжка"
-    public float LastPressedJumpTime { get; private set; }
-
-    // Таймер послденего считывания кнопки "дэша"
-    public float LastPressedDashTime { get; private set; }
-
-    #endregion
-
     public IDLE(tmpMovement playerMovement) :
         base(playerMovement)
     {
-        _groundCheck = playerMovement.groundCheck;
     }
 
     public override void Enter()
@@ -61,12 +19,42 @@ public class IDLE : GroundedState
 
     public override void Update()
     {
-        #region Input
+        base.Update();
+
+        #region TIMERS
+        
+        playerMovement.coyoteTime = playerMovement.data.coyoteTime;
+
+        playerMovement.LastPressedJumpTime -= Time.deltaTime;
+        playerMovement.LastPressedDashTime -= Time.deltaTime;
+        
+        playerMovement.dashRechargeTime -= Time.deltaTime;
+        
+        if (playerMovement.dashRechargeTime < -100f)
+        {
+            playerMovement.dashRechargeTime = 0;
+        }
+        #endregion
+        
+        #region INPUT
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
         _moveInput.y = Input.GetAxisRaw("Vertical");
-        
-        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
+
+        if (Input.GetAxisRaw("Jump") > 0)
+        {
+            OnJumpInput();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && 
+            playerMovement.dashRechargeTime < 0)
+        {
+            OnDashInput();
+        }
+
+        #endregion
+
+        if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
         }
@@ -76,24 +64,21 @@ public class IDLE : GroundedState
             FSM.SetState<RunState>();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && playerMovement.LastPressedJumpTime > 0)
         {
             FSM.SetState<JumpState>();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) && playerMovement.LastPressedDashTime > 0 && 
+            playerMovement.dashRechargeTime < 0)
         {
             FSM.SetState<DashState>();
         }
 
-        #endregion
-
-
-        base.Update();
-    }
-
-    public void OnJumpInput()
-    {
-        LastPressedJumpTime = _data.jumpInputBufferTime;
+        if (IsFalling())
+        {
+            RechargeCoyoteTime();
+            FSM.SetState<FallingState>();
+        }
     }
 }

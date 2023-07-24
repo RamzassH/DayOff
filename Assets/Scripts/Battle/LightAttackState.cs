@@ -1,26 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LightAttackState : BattleState
 {
 
     // Animator
-    private float _duration;
-    private float _startTime;
-    private bool _isInput;
-    private bool _isInputLightAttack;
-    private bool _isInputHeavyAttack;
+    private float _endAttackTime;
+    private float _nextAttackInputBuffer;
+    private float _timer;
 
     public LightAttackState(tmpMovement tmp): base(tmp) { }
 
     public override void Enter()
     {
-        _duration = 0.5f;
-        _startTime = 0.1f;
-        _isInput = false;
-        _isInputLightAttack = false;
-        _isInputHeavyAttack = false;
+        _endAttackTime = 0.5f;
+        _nextAttackInputBuffer = 0.3f;
+        _timer = 0f;
+        
+        // _isInput = false;
+        // _isInputLightAttack = false;
+        // _isInputHeavyAttack = false;
         base.Enter();
     }
 
@@ -29,20 +27,17 @@ public class LightAttackState : BattleState
     public override void Update()
     {
         base.Update();
-        _duration -= Time.deltaTime;
-        _startTime -= Time.deltaTime;
-
-        if (_duration < 0 && !_isInput)
-        {
-            playerMovement.SetNullCombo();
-            FSM.SetState<BattleIDLEState>();
-            return;
-        }
-        if (_duration < 0 && _isInputLightAttack)
+        _timer += Time.deltaTime;
+        
+        if (Input.GetAxis("Fire1") > 0 && _timer >= _nextAttackInputBuffer)
         {
             if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.LightAttack))
             {
-                playerMovement.IncreaseIndexCombo();
+                playerMovement.IncreaseComboIndex();
+            }
+            else if (playerMovement.ChangeCombo(ComboEvents.LightAttack))
+            {
+                playerMovement.SetCurrentCombo(ComboEvents.LightAttack);
             }
             else
             {
@@ -51,50 +46,29 @@ public class LightAttackState : BattleState
             FSM.SetState<LightAttackState>();
             return;
         }
-        if (_duration < 0 && _isInputHeavyAttack)
+
+        if (Input.GetAxis("Fire2") > 0 && _timer >= _nextAttackInputBuffer)
         {
             if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.HeavyAttack))
             {
-                playerMovement.IncreaseIndexCombo();
+                playerMovement.IncreaseComboIndex();
             }
-            else
+            else if (playerMovement.ChangeCombo(ComboEvents.HeavyAttack))
+            {
+                playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
+            }
+            else 
             {
                 playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
             }
             FSM.SetState<HeavyAttackState>();
             return;
         }
-
-
-        if (Input.GetAxis("Fire1") > 0 && !_isInput && _startTime < 0f)
+        
+        if (_timer >= _endAttackTime)
         {
-            //if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.LightAttack))
-            //{
-            //    playerMovement.IncreaseIndexCombo();
-            //}
-            //else
-            //{
-            //    playerMovement.SetCurrentCombo(ComboEvents.LightAttack);
-            //}
-            //FSM.SetState<LightAttackState>();
-            _isInput = true;
-            _isInputLightAttack = true;
-            return;
-        }
-
-        if (Input.GetAxis("Fire2") > 0 && !_isInput && _startTime < 0f)
-        {
-            //if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.HeavyAttack))
-            //{
-            //    playerMovement.IncreaseIndexCombo();
-            //}
-            //else
-            //{
-            //    playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
-            //}
-            //FSM.SetState<HeavyAttackState>();
-            _isInput = true;
-            _isInputHeavyAttack = true;
+            playerMovement.ResetCombo();
+            FSM.SetState<BattleIDLEState>();
             return;
         }
 

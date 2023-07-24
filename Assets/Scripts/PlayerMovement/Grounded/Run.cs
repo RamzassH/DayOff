@@ -1,28 +1,14 @@
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class RunState : GroundedState
 {
-    private MovementData _data;
-
-    private Transform _checkPosition;
-    private Vector2 _checkSize;
-    private LayerMask _groundLayer;
-
     #region INPUT PARAMETERS
-
-    private Vector2 _moveInput;
 
     #endregion
 
     public RunState(tmpMovement playerMovement) :
         base(playerMovement)
     {
-        _data = Data;
-        _checkPosition = GameObject.FindWithTag("checkGround").GetComponent<Transform>();
-        _checkSize = new Vector2(0.49f, 0.03f);
-        _groundLayer = 8;
     }
 
     public override void Enter()
@@ -39,6 +25,10 @@ public class RunState : GroundedState
 
     public override void Update()
     {
+        playerMovement.LastPressedJumpTime -= Time.deltaTime;
+        playerMovement.LastPressedDashTime -= Time.deltaTime;
+        
+        playerMovement.dashRechargeTime -= Time.deltaTime;
         #region Input
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -51,26 +41,36 @@ public class RunState : GroundedState
         {
             playerTransform.localScale = new Vector3(-1, 1, 1);
         }
-        
         playerMovement.ChangeDirection();
         
-
         if (Input.GetKeyDown(KeyCode.Space))
+        {
+            OnJumpInput();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && 
+            playerMovement.dashRechargeTime < 0)
+        {
+            OnDashInput();
+        }
+        
+        #endregion
+        
+        
+        if (playerMovement.LastPressedJumpTime > 0)
         {
             FSM.SetState<JumpState>();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (playerMovement.LastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
         
-        if (IsTouchWall(playerMovement.rightWallCheck.position, playerMovement.leftWallCheck.position, wallCheckSize, groundLayer))
+        if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
         }
-
-        #endregion
 
         base.Update();
 
@@ -79,8 +79,9 @@ public class RunState : GroundedState
             FSM.SetState<IDLE>();
         }
 
-        if (IsFalling(_checkPosition.position, _checkSize, _groundLayer))
+        if (IsFalling())
         {
+            RechargeCoyoteTime();
             FSM.SetState<FallingState>();
         }
     }
