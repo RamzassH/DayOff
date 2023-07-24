@@ -24,8 +24,7 @@ public class BattleState : State
         base.Update();
 
         float moveInputX = Input.GetAxisRaw("Horizontal");
-        bool isFalling = IsFalling(playerMovement.groundCheck.position, 
-                                    groundCheckSize, groundLayer);
+        bool isFalling = IsFalling();
         if (isFalling)
         {
             FSM.SetState<FallingState>();
