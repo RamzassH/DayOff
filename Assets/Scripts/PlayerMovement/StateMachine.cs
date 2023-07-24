@@ -20,10 +20,10 @@ public class StateMachine
     {
         var type = typeof(T);
 
-        if (_currentState != null && _currentState.GetType() == type)
-        {
-            return;
-        }
+        //if (_currentState != null && _currentState.GetType() == type)
+        //{
+        //    return;
+        //}
 
         if (_states.TryGetValue(type, out var newState))
         {

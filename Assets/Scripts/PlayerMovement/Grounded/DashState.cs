@@ -13,6 +13,7 @@ public class DashState : GroundedState
     public override void Enter()
     {
         base.Enter();
+        playerMovement.LastPressedDashTime = 0;
         Vector2 direction = new Vector2(playerTransform.localScale.x, 0);
         playerMovement.StartCoroutine(StartDash(direction));
     }
@@ -20,13 +21,19 @@ public class DashState : GroundedState
     public override void Exit()
     {
         base.Exit();
+        playerMovement.dashRechargeTime = playerMovement.data.dashRefillTime;
     }
 
     public override void Update()
     {
         base.Update();
+        
+        #region INPUT
+
         _moveInput.x = Input.GetAxisRaw("Horizontal");
 
+        #endregion
+        
         if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
@@ -45,6 +52,7 @@ public class DashState : GroundedState
         if (IsInAir() &&
             !_isDashing)
         {
+            RechargeCoyoteTime();
             FSM.SetState<FallingState>();
         }
     }

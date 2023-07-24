@@ -26,11 +26,6 @@ public class WallJumpState : OnWall
     
     private void WallJump()
     {
-        // LastPressedJumpTime = 0;
-        // LastOnGroundTime = 0;
-        // LastOnWallLeftTime = 0;
-        // LastOnWallRightTime = 0;
-
         #region Perform Wall Jump
         
         Vector2 tmp = new Vector2(playerMovement.transform.localScale.x, 0);

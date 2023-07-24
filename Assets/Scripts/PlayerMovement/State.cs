@@ -22,7 +22,7 @@ public abstract class State
     {
         FSM = playerMovement.FSM;
         RB = playerMovement.RB;
-        Data = playerMovement.Data;
+        Data = playerMovement.data;
         this.playerMovement = playerMovement;
 
         groundCheckSize = new Vector2(0.5f, 0.03f);
@@ -50,6 +50,19 @@ public abstract class State
     protected bool IsFalling()
     {
         return RB.velocity.y <= 0 && !Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+            0, groundLayer);
+    }
+
+    protected bool IsCanClimb()
+    {
+        float distance = 0.5f;
+        return !Physics2D.Raycast(playerMovement.headRayCastPos.position, playerMovement.transform.forward,
+            distance, groundLayer);
+    }
+
+    protected bool IsGrounded()
+    {
+        return Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
             0, groundLayer);
     }
 
@@ -115,6 +128,20 @@ public abstract class State
         // }
         //
         // #endregion
-        
+    }
+    
+    public void OnJumpInput()
+    {
+        playerMovement.LastPressedJumpTime = playerMovement.data.jumpInputBufferTime;
+    }
+
+    public void OnDashInput()
+    {
+        playerMovement.LastPressedDashTime = playerMovement.data.dashInputBufferTime;
+    }
+
+    public void RechargeCoyoteTime()
+    {
+        playerMovement.coyoteTime = playerMovement.data.coyoteTime;
     }
 }

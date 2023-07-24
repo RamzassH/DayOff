@@ -28,6 +28,13 @@ public class GrapState : OnWall
     public override void Update()
     {
         base.Update();
+
+        #region TIMERS
+
+        playerMovement.coyoteTime -= Time.deltaTime;
+
+        #endregion
+
         _moveInput.x = Input.GetAxisRaw("Horizontal");
 
         if (!(_isTouchRightWall && _moveInput.x > 0 ||

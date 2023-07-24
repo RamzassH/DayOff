@@ -28,6 +28,17 @@ public class TouchWall : OnWall
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
 
+        bool isTouchingRightWall = IsTouchingRightWall();
+        bool isTouchingLeftWall = IsTouchingLeftWall();
+        
+        if (IsCanClimb() && 
+            (isTouchingRightWall && _moveInput.x > 0 ||
+             isTouchingLeftWall && _moveInput.x < 0))
+        {
+            FSM.SetState<UpOnLedge>();
+            return;
+        }
+        
         if (!_isInAir &&
             Input.GetKeyDown(KeyCode.Space))
         {
@@ -40,9 +51,7 @@ public class TouchWall : OnWall
             FSM.SetState<WallJumpState>();
             return;
         }
-        
-        bool isTouchingRightWall = IsTouchingRightWall();
-        bool isTouchingLeftWall = IsTouchingLeftWall();
+
         if (_isFalling &&
             (isTouchingRightWall && _moveInput.x > 0 ||
              isTouchingLeftWall && _moveInput.x < 0))

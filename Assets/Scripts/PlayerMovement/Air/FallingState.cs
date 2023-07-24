@@ -22,7 +22,30 @@ public class FallingState : AirState
 
     public override void Update()
     {
-        if (!IsFalling())
+
+        #region TIMERS
+
+        playerMovement.coyoteTime -= Time.deltaTime;
+
+        #endregion
+
+        #region INPUT
+
+        if (Input.GetAxisRaw("Jump") > 0)
+        {
+            OnJumpInput();
+        }
+
+        #endregion
+
+        if (playerMovement.coyoteTime > 0 &&
+            playerMovement.LastPressedJumpTime > 0)
+        {
+            playerMovement.coyoteTime = 0;
+            FSM.SetState<JumpState>();
+        }
+        
+        if (IsGrounded())
         {
             FSM.SetState<IDLE>();
         }

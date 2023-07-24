@@ -25,6 +25,10 @@ public class RunState : GroundedState
 
     public override void Update()
     {
+        playerMovement.LastPressedJumpTime -= Time.deltaTime;
+        playerMovement.LastPressedDashTime -= Time.deltaTime;
+        
+        playerMovement.dashRechargeTime -= Time.deltaTime;
         #region Input
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -37,16 +41,28 @@ public class RunState : GroundedState
         {
             playerTransform.localScale = new Vector3(-1, 1, 1);
         }
-        
         playerMovement.ChangeDirection();
         
-
         if (Input.GetKeyDown(KeyCode.Space))
+        {
+            OnJumpInput();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && 
+            playerMovement.dashRechargeTime < 0)
+        {
+            OnDashInput();
+        }
+        
+        #endregion
+        
+        
+        if (playerMovement.LastPressedJumpTime > 0)
         {
             FSM.SetState<JumpState>();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (playerMovement.LastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
@@ -55,8 +71,6 @@ public class RunState : GroundedState
         {
             FSM.SetState<TouchWall>();
         }
-
-        #endregion
 
         base.Update();
 
@@ -67,6 +81,7 @@ public class RunState : GroundedState
 
         if (IsFalling())
         {
+            RechargeCoyoteTime();
             FSM.SetState<FallingState>();
         }
     }

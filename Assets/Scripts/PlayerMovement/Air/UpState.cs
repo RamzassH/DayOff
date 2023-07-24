@@ -21,8 +21,14 @@ public class UpState : AirState
     {
         base.Update();
 
-        _moveInput.y = Input.GetAxisRaw("Vertical");
+        #region TIMERS
 
+        playerMovement.coyoteTime -= Time.deltaTime;
+
+        #endregion
+
+        _moveInput.y = Input.GetAxisRaw("Vertical");
+        
         if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();

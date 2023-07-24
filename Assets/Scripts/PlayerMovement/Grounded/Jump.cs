@@ -10,6 +10,7 @@ public class JumpState : GroundedState
     public override void Enter()
     {
         base.Enter();
+        playerMovement.LastPressedJumpTime = 0;
         Jump();
         FSM.SetState<UpState>();
     }
