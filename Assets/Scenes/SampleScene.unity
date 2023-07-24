@@ -1837,6 +1837,8 @@ MonoBehaviour:
   infoCombo: {fileID: 913583181}
   comboList:
   - {fileID: 11400000, guid: c144579cf934ca943a20daa04f63e858, type: 2}
+  - {fileID: 11400000, guid: edc0b1c3e3d16b84d9f812e4d82162f3, type: 2}
+  - {fileID: 11400000, guid: bdb86b1b9157e754ca892d460fd3d5e2, type: 2}
 --- !u!1 &1598237161
 GameObject:
   m_ObjectHideFlags: 0

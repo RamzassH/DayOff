@@ -6,6 +6,7 @@ public enum ComboEvents
 {
     None,
     LightAttack,
-    HeavyAttack
+    HeavyAttack,
+    Block
 }
 

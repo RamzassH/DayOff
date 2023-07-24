@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightAttackState : State
+public class LightAttackState : BattleState
 {
 
     // Animator
     private float _duration;
+    private float _startTime;
     private bool _isInput;
     private bool _isInputLightAttack;
     private bool _isInputHeavyAttack;
@@ -16,6 +17,7 @@ public class LightAttackState : State
     public override void Enter()
     {
         _duration = 0.5f;
+        _startTime = 0.1f;
         _isInput = false;
         _isInputLightAttack = false;
         _isInputHeavyAttack = false;
@@ -28,6 +30,8 @@ public class LightAttackState : State
     {
         base.Update();
         _duration -= Time.deltaTime;
+        _startTime -= Time.deltaTime;
+
         if (_duration < 0 && !_isInput)
         {
             playerMovement.SetNullCombo();
@@ -62,7 +66,7 @@ public class LightAttackState : State
         }
 
 
-        if (Input.GetAxis("Fire1") > 0 && !_isInput)
+        if (Input.GetAxis("Fire1") > 0 && !_isInput && _startTime < 0f)
         {
             //if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.LightAttack))
             //{
@@ -78,7 +82,7 @@ public class LightAttackState : State
             return;
         }
 
-        if (Input.GetAxis("Fire2") > 0 && !_isInput)
+        if (Input.GetAxis("Fire2") > 0 && !_isInput && _startTime < 0f)
         {
             //if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.HeavyAttack))
             //{
@@ -91,6 +95,13 @@ public class LightAttackState : State
             //FSM.SetState<HeavyAttackState>();
             _isInput = true;
             _isInputHeavyAttack = true;
+            return;
+        }
+
+        if (Input.GetKey(KeyCode.Q))
+        {
+            playerMovement.SetNullCombo();
+            FSM.SetState<BlockState>();
             return;
         }
     }

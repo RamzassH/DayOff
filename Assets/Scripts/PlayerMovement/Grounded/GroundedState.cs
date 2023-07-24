@@ -31,5 +31,28 @@ public class GroundedState : State
     public override void Update()
     {
         base.Update();
+        bool isFalling = IsFalling(playerMovement.groundCheck.position,
+            groundCheckSize, groundLayer);
+        if (Input.GetAxis("Fire1") > 0f && !isFalling && 
+            (this is IDLE || this is RunState)) 
+        {
+            FSM.SetState<BattleIDLEState>();
+            (FSM.GetCurrentState() as BattleIDLEState).SetStartAction(ComboEvents.LightAttack);
+            return;
+        }
+        if (Input.GetAxis("Fire2") > 0f && !isFalling &&
+            (this is IDLE || this is RunState)) 
+        {
+            FSM.SetState<BattleIDLEState>();
+            (FSM.GetCurrentState() as BattleIDLEState).SetStartAction(ComboEvents.HeavyAttack);
+            return;
+        }
+        if (Input.GetKey(KeyCode.Q) && !isFalling &&
+            (this is IDLE || this is RunState)) 
+        {
+            FSM.SetState<BattleIDLEState>();
+            (FSM.GetCurrentState() as BattleIDLEState).SetStartAction(ComboEvents.Block);
+            return;
+        }
     }
 }

@@ -24,7 +24,7 @@ public class tmpMovement : MonoBehaviour
 
     [SerializeField] private List<Combo> comboList;
 
-    private Combo _currentCombo;
+    private List<Combo> _currentComboList;
     private int _indexAttackInCombo;
 
     public void Awake()
@@ -72,15 +72,16 @@ public class tmpMovement : MonoBehaviour
         _FSM.AddState(new BattleIDLEState(this));
         _FSM.AddState(new LightAttackState(this));
         _FSM.AddState(new HeavyAttackState(this));
-
+        _FSM.AddState(new BlockState(this));
         #endregion
     }
 
     void Start()
     {
         // Вернуть IDLE!!!
-        //_FSM.SetState<IDLE>();
-        _FSM.SetState<BattleIDLEState>();
+        _FSM.SetState<IDLE>();
+        //_FSM.SetState<BattleIDLEState>();
+        _currentComboList = new List<Combo>();
         _indexAttackInCombo = 0;
     }
     
@@ -88,13 +89,14 @@ public class tmpMovement : MonoBehaviour
     {
         _FSM.Update();
         text.text = _FSM.GetCurrentState().ToString();
-        if (_currentCombo == null)
+        if (_currentComboList.Count == 0)
         {
             infoCombo.text = "None Combo";
         }
         else 
         { 
-            infoCombo.text = _currentCombo._name + " Action number " + _indexAttackInCombo;
+            infoCombo.text = "Count combo: " + _currentComboList.Count.ToString() + "\n" + 
+                             "Index Action: " + _indexAttackInCombo.ToString();
         }
     }
 
@@ -115,33 +117,46 @@ public class tmpMovement : MonoBehaviour
     }
 
     public void SetCurrentCombo(ComboEvents startAction) {
+        SetNullCombo();
         if (startAction != ComboEvents.None) 
         {
             foreach (var combo in comboList)
             {
                 if (combo != null && combo.GetActionInIndex(0) == startAction) 
                 { 
-                    _currentCombo = combo;
+                    _currentComboList.Add(combo);
                     _indexAttackInCombo = 1;
-                    return;
                 }
             }
         }
-        _currentCombo = null;
     }
 
     public bool IsActionEqualCurrentComboEvent(ComboEvents action) 
     {
-        if (_currentCombo == null) 
+        if (_currentComboList.Count == 0) 
         { 
             return false;
         }
-        return _currentCombo.GetActionInIndex(_indexAttackInCombo) == action;
+        List<Combo> listCombo = new List<Combo>();
+        for (var i = 0; i < _currentComboList.Count; i++) 
+        {
+            if (_currentComboList[i].GetActionInIndex(_indexAttackInCombo) == action) 
+            {
+                listCombo.Add(_currentComboList[i]);
+            }
+        }
+        _currentComboList.Clear();
+
+        foreach (var combo in listCombo) 
+        {
+            _currentComboList.Add(combo);
+        }
+        return _currentComboList.Count != 0;
     }
 
     public void SetNullCombo() 
     {
-        _currentCombo = null;
+        _currentComboList.Clear();
         _indexAttackInCombo = 0;
     }
 
