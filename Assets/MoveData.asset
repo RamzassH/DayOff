@@ -24,27 +24,20 @@ MonoBehaviour:
   runAccelerationAmount: 5
   runDeccelerationAmount: 0.049999997
   accelerationInAir: 0.27
-  deccelerationInAir: 0.31
-  doConserveMomentum: 1
+  deccelerationInAir: 0.279
   jumpHeight: 3
   jumpTimeToApex: 0.5
+  doubleJumpTimeToApex: 0.5
+  jumpFallingGravityScale: 4
+  jumpVelocityFallOff: 0
+  doubleJumpForce: 12
   jumpForce: 12
-  jumpCharge: 2
   jumpCutGravityMultiplier: 5
-  jumpHangGravityMultiplier: 0
-  jumpHangTimeThreshold: 0
-  jumpHangAccelerationMult: 0
-  jumpHangMaxSpeedMult: 0
   wallJumpForce: {x: 10, y: 10}
-  wallJumpRunLerp: 0.2103
-  wallJumpTime: 0.29
-  doTurnOnWallJump: 1
   slideAccel: 12
   slideSpeed: 2
-  slideEndSpeed: 0
-  slideInputBufferTime: 0.2
-  coyoteTime: 0.5
-  jumpInputBufferTime: 0.5
+  coyoteTime: 0.01
+  jumpInputBufferTime: 0.01
   dashAmount: 2
   dashSpeed: 10
   dashSleepTime: 0.1
@@ -53,4 +46,4 @@ MonoBehaviour:
   dashEndSpeed: {x: 20, y: 0}
   dashEndRunLerp: 1
   dashRefillTime: 5
-  dashInputBufferTime: 0.5
+  dashInputBufferTime: 0.108

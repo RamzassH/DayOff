@@ -1,9 +1,10 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UpState : AirState
 {
-    public UpState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public UpState(ChController controller) :
+        base(controller)
     {
     }
 
@@ -23,7 +24,7 @@ public class UpState : AirState
 
         #region TIMERS
 
-        playerMovement.coyoteTime -= Time.deltaTime;
+        controller.coyoteTime -= Time.deltaTime;
 
         #endregion
 
@@ -43,10 +44,23 @@ public class UpState : AirState
         {
             FSM.SetState<DoubleJump>();
         }
-
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            FSM.SetState<DashState>();
+        }
         if (_moveInput.y < 0)
         {
             FSM.SetState<JumpCutState>();
+        }
+    }
+
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+
+        if (RB.velocity.y < Data.jumpVelocityFallOff)
+        {
+            RB.velocity += Vector2.up * Physics.gravity.y * Data.fallGravityMultiplier * Time.deltaTime;
         }
     }
 }

@@ -1043,6 +1043,7 @@ GameObject:
   - component: {fileID: 1003337139}
   - component: {fileID: 1003337141}
   - component: {fileID: 1003337140}
+  - component: {fileID: 1003337142}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -1120,6 +1121,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1003337142
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003337138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 5
+  mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &1015845262
 GameObject:
   m_ObjectHideFlags: 0
@@ -1700,6 +1718,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1545429114}
   - component: {fileID: 1545429115}
+  - component: {fileID: 1545429116}
   m_Layer: 0
   m_Name: Virtual Camera
   m_TagString: Untagged
@@ -1762,6 +1781,18 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1003337139}
+--- !u!114 &1545429116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545429113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c1950133d19de443869df88ec7e6126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1596161839
 GameObject:
   m_ObjectHideFlags: 0
@@ -1774,7 +1805,6 @@ GameObject:
   - component: {fileID: 1596161843}
   - component: {fileID: 1596161842}
   - component: {fileID: 1596161841}
-  - component: {fileID: 1596161840}
   - component: {fileID: 1596161845}
   m_Layer: 0
   m_Name: Capsule
@@ -1783,27 +1813,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1596161840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1596161839}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51040e0627592f849bb4a4a8da46ce63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Data: {fileID: 11400000, guid: 26ce889cb6d4f974fae8d2930bc52ffd, type: 2}
-  _groundCheckPoint: {fileID: 1311329017}
-  _groundCheckSize: {x: 0, y: 0}
-  _frontWallCheckPoint: {fileID: 1598237162}
-  _backWallCheckPoint: {fileID: 1823558598}
-  _wallCheckSize: {x: 0, y: 0}
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!70 &1596161841
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1958,7 +1967,8 @@ MonoBehaviour:
   infoCombo: {fileID: 1015845264}
   comboList:
   - {fileID: 11400000, guid: c144579cf934ca943a20daa04f63e858, type: 2}
-  - {fileID: 11400000, guid: ba47913dd4ad0b949a6d4d8f32834a6f, type: 2}
+  - {fileID: 11400000, guid: edc0b1c3e3d16b84d9f812e4d82162f3, type: 2}
+  - {fileID: 11400000, guid: bdb86b1b9157e754ca892d460fd3d5e2, type: 2}
   coyoteTime: 0
   lastOnWallTime: 0
   dashRechargeTime: 0

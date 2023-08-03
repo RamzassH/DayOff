@@ -1,16 +1,18 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class JumpState : GroundedState
 {
-    public JumpState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public JumpState(ChController controller) :
+        base(controller)
     {
     }
 
     public override void Enter()
     {
         base.Enter();
-        playerMovement.LastPressedJumpTime = 0;
+        controller.LastPressedJumpTime = 0;
+        float jumpForceMultiplier = Data.jumpForce;
         Jump();
         FSM.SetState<UpState>();
     }

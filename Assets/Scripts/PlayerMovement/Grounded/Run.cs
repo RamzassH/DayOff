@@ -6,8 +6,8 @@ public class RunState : GroundedState
 
     #endregion
 
-    public RunState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public RunState(ChController controller) :
+        base(controller)
     {
     }
 
@@ -25,10 +25,10 @@ public class RunState : GroundedState
 
     public override void Update()
     {
-        playerMovement.LastPressedJumpTime -= Time.deltaTime;
-        playerMovement.LastPressedDashTime -= Time.deltaTime;
+        controller.LastPressedJumpTime -= Time.deltaTime;
+        controller.LastPressedDashTime -= Time.deltaTime;
         
-        playerMovement.dashRechargeTime -= Time.deltaTime;
+        controller.dashRechargeTime -= Time.deltaTime;
         #region Input
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -41,7 +41,7 @@ public class RunState : GroundedState
         {
             playerTransform.localScale = new Vector3(-1, 1, 1);
         }
-        playerMovement.ChangeDirection();
+        controller.ChangeDirection();
         
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -49,7 +49,7 @@ public class RunState : GroundedState
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && 
-            playerMovement.dashRechargeTime < 0)
+            controller.dashRechargeTime < 0)
         {
             OnDashInput();
         }
@@ -57,12 +57,12 @@ public class RunState : GroundedState
         #endregion
         
         
-        if (playerMovement.LastPressedJumpTime > 0)
+        if (controller.LastPressedJumpTime > 0)
         {
             FSM.SetState<JumpState>();
         }
 
-        if (playerMovement.LastPressedDashTime > 0)
+        if (controller.LastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }

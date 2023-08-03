@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class WallJumpState : OnWall
 {
-    public WallJumpState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public WallJumpState(ChController controller) :
+        base(controller)
     {
     }
 
@@ -12,6 +12,7 @@ public class WallJumpState : OnWall
         base.Enter();
         WallJump();
         FSM.SetState<UpState>();
+        CameraShake.Instance.DoShakeCamera(3,0.1f);
     }
 
     public override void Exit()
@@ -28,16 +29,16 @@ public class WallJumpState : OnWall
     {
         #region Perform Wall Jump
         
-        Vector2 tmp = new Vector2(playerMovement.transform.localScale.x, 0);
+        Vector2 tmp = new Vector2(controller.transform.localScale.x, 0);
         
         if (tmp.x > 0 && IsTouchingRightWall() ||
             tmp.x < 0 && IsTouchingLeftWall())
         {
-            Vector3 scale = playerMovement.transform.localScale;
+            Vector3 scale = controller.transform.localScale;
             scale.x *= -1;
             tmp.x *= -1;
-            playerMovement.transform.localScale = scale;
-            playerMovement.ChangeDirection();
+            controller.transform.localScale = scale;
+            controller.ChangeDirection();
         }
         
         Vector2 force = new Vector2(Data.wallJumpForce.x, Data.wallJumpForce.y);

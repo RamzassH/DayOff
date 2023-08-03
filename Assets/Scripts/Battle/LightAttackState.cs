@@ -8,7 +8,7 @@ public class LightAttackState : BattleState
     private float _nextAttackInputBuffer;
     private float _timer;
 
-    public LightAttackState(tmpMovement tmp): base(tmp) { }
+    public LightAttackState(ChController controller): base(controller) { }
 
     public override void Enter()
     {
@@ -31,13 +31,13 @@ public class LightAttackState : BattleState
         
         if (Input.GetAxis("Fire1") > 0 && _timer >= _nextAttackInputBuffer)
         {
-            if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.LightAttack))
+            if (controller.IsActionEqualCurrentComboEvent(ComboEvents.LightAttack))
             {
-                playerMovement.IncreaseComboIndex();
+                controller.IncreaseComboIndex();
             }
             else
             {
-                playerMovement.SetCurrentCombo(ComboEvents.LightAttack);
+                controller.SetCurrentCombo(ComboEvents.LightAttack);
             }
             FSM.SetState<LightAttackState>();
             return;
@@ -45,13 +45,13 @@ public class LightAttackState : BattleState
 
         if (Input.GetAxis("Fire2") > 0 && _timer >= _nextAttackInputBuffer)
         {
-            if (playerMovement.IsActionEqualCurrentComboEvent(ComboEvents.HeavyAttack))
+            if (controller.IsActionEqualCurrentComboEvent(ComboEvents.HeavyAttack))
             {
-                playerMovement.IncreaseComboIndex();
+                controller.IncreaseComboIndex();
             }
             else 
             {
-                playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
+                controller.SetCurrentCombo(ComboEvents.HeavyAttack);
             }
             FSM.SetState<HeavyAttackState>();
             return;
@@ -59,14 +59,14 @@ public class LightAttackState : BattleState
         
         if (_timer >= _endAttackTime)
         {
-            playerMovement.SetNullCombo();
+            controller.SetNullCombo();
             FSM.SetState<BattleIDLEState>();
             return;
         }
 
         if (Input.GetKey(KeyCode.Q))
         {
-            playerMovement.SetNullCombo();
+            controller.SetNullCombo();
             FSM.SetState<BlockState>();
             return;
         }

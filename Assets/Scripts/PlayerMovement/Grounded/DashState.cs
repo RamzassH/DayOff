@@ -1,27 +1,31 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DashState : GroundedState
 {
     private bool _isDashing;
 
-    public DashState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public DashState(ChController controller) :
+        base(controller)
     {
     }
 
     public override void Enter()
     {
         base.Enter();
-        playerMovement.LastPressedDashTime = 0;
+        controller.LastPressedDashTime = 0;
+        RB.gravityScale = 0;
         Vector2 direction = new Vector2(playerTransform.localScale.x, 0);
-        playerMovement.StartCoroutine(StartDash(direction));
+        CameraShake.Instance.DoShakeCamera(2f,0.2f);
+        controller.StartCoroutine(StartDash(direction));
     }
 
     public override void Exit()
     {
         base.Exit();
-        playerMovement.dashRechargeTime = playerMovement.data.dashRefillTime;
+        controller.dashRechargeTime = controller.data.dashRefillTime;
+        RB.gravityScale = Data.gravityScale;
     }
 
     public override void Update()
@@ -61,7 +65,7 @@ public class DashState : GroundedState
     {
         _isDashing = true;
         float startTime = Time.time;
-        RB.gravityScale = 0;
+        //RB.gravityScale = 0;
 
         while (Time.time - startTime <= Data.dashAttackTime)
         {
@@ -70,7 +74,7 @@ public class DashState : GroundedState
         }
 
         startTime = Time.time;
-        RB.gravityScale = Data.gravityScale;
+        //RB.gravityScale = Data.gravityScale;
         RB.velocity = Data.dashEndSpeed * dir.normalized;
 
         while (Time.time - startTime <= Data.dashEndTime)

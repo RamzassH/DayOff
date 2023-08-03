@@ -6,7 +6,7 @@ public class BattleIDLEState : BattleState
 {
     private ComboEvents _startAction;
 
-    public BattleIDLEState(tmpMovement tmp) : base(tmp) 
+    public BattleIDLEState(ChController controller) : base(controller) 
     {
         _startAction = ComboEvents.None;
     }
@@ -26,7 +26,7 @@ public class BattleIDLEState : BattleState
         if (Input.GetAxis("Fire1") > 0 || 
             _startAction == ComboEvents.LightAttack) 
         {
-            playerMovement.SetCurrentCombo(ComboEvents.LightAttack);
+            controller.SetCurrentCombo(ComboEvents.LightAttack);
             FSM.SetState<LightAttackState>();
             return;
         }
@@ -34,7 +34,7 @@ public class BattleIDLEState : BattleState
         if (Input.GetAxis("Fire2") > 0 || 
             _startAction == ComboEvents.HeavyAttack) 
         {
-            playerMovement.SetCurrentCombo(ComboEvents.HeavyAttack);
+            controller.SetCurrentCombo(ComboEvents.HeavyAttack);
             FSM.SetState<HeavyAttackState>();
             return;
         }
