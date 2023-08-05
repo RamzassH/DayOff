@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FallingState : AirState
 {
-    public FallingState(tmpMovement playerMovement) :
-        base(playerMovement)
+
+    private Vector2 _moveInput;
+    public FallingState(ChController controller) :
+        base(controller)
     {
     }
 
@@ -13,19 +16,23 @@ public class FallingState : AirState
     public override void Enter()
     {
         base.Enter();
+        RB.gravityScale = Data.jumpFallingGravityScale;
     }
 
     public override void Exit()
     {
         base.Exit();
+        RB.gravityScale = Data.gravityScale;
     }
 
     public override void Update()
     {
-
+        
+        Debug.Log(IsDoubleJumped);
+        
         #region TIMERS
 
-        playerMovement.coyoteTime -= Time.deltaTime;
+        controller.coyoteTime -= Time.deltaTime;
 
         #endregion
 
@@ -35,23 +42,42 @@ public class FallingState : AirState
         {
             OnJumpInput();
         }
+        
+        _moveInput.x = Input.GetAxisRaw("Horizontal");
 
         #endregion
 
-        if (playerMovement.coyoteTime > 0 &&
-            playerMovement.LastPressedJumpTime > 0)
+        if (controller.coyoteTime > 0 &&
+            controller.LastPressedJumpTime > 0)
         {
-            playerMovement.coyoteTime = 0;
+            controller.coyoteTime = 0;
             FSM.SetState<JumpState>();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && IsDoubleJumped == false) 
+        {
+            FSM.SetState<DoubleJump>();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            FSM.SetState<DashState>();
+        }
+
+        if (_moveInput.x != 0)
+        {
+            RB.AddForce(new Vector2(_moveInput.x * 10, RB.velocity.y));
         }
         
         if (IsGrounded())
         {
+            IsDoubleJumped = false;
             FSM.SetState<IDLE>();
         }
 
         if (IsTouchWall())
         {
+            IsDoubleJumped = false;
             FSM.SetState<TouchWall>();
         }
         

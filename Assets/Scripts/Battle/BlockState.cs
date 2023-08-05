@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlockState : BattleState
 {
-    public BlockState(tmpMovement tmp): base(tmp) { }
+    public BlockState(ChController controller): base(controller) { }
 
     public override void Enter()
     {

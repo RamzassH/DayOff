@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class DoubleJump : State
+public class DoubleJump : AirState
 {
-    public DoubleJump(tmpMovement playerMovement) :
-        base(playerMovement)
+    public DoubleJump(ChController controller) :
+        base(controller)
     {
     }
 
@@ -11,6 +11,7 @@ public class DoubleJump : State
     {
         base.Enter();
         Jump();
+        CameraShake.Instance.DoShakeCamera(5f, 0.2f);
         FSM.SetState<DoubleJumpUpState>();
     }
 
@@ -18,12 +19,12 @@ public class DoubleJump : State
     {
         base.Exit();
     }
-
+    
     private void Jump()
     {
         #region Perform Jump
 
-        float force = Data.jumpForce;
+        float force = Data.doubleJumpForce;
         
         if (RB.velocity.y < 0)
         {
@@ -34,4 +35,5 @@ public class DoubleJump : State
 
         #endregion
     }
+
 }

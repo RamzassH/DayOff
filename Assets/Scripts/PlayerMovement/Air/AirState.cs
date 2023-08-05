@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class AirState : State
 {
-    public AirState(tmpMovement playerMovement) :
-        base(playerMovement)
+    static protected bool IsDoubleJumped;
+    public AirState(ChController controller) :
+        base(controller)
     {
     }
 

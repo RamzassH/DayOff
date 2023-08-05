@@ -43,8 +43,14 @@ public class StateMachine
         _currentState?.FixedUpdate();
     }
 
+    public void LateUpdate()
+    {
+        _currentState?.LateUpdate();
+    }
+    
     public State GetCurrentState()
     {
         return _currentState;
     }
+    
 }

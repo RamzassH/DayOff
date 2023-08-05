@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class tmpMovement : MonoBehaviour
+public class ChController : MonoBehaviour
 {
     public MovementData data;
     private StateMachine _FSM;
@@ -13,7 +13,6 @@ public class tmpMovement : MonoBehaviour
     public Transform rightWallCheck;
     public Transform leftWallCheck;
     public Transform headRayCastPos;
-
 
     public TextMeshProUGUI infoMovement;
     public TextMeshProUGUI infoCombo;
@@ -100,7 +99,6 @@ public class tmpMovement : MonoBehaviour
 
     void Start()
     {
-        // Вернуть IDLE!!!
         _FSM.SetState<IDLE>();
         //_FSM.SetState<BattleIDLEState>();
         _currentComboList = new List<Combo>();
@@ -127,10 +125,10 @@ public class tmpMovement : MonoBehaviour
         _FSM.FixedUpdate();
     }
 
-    //public void SetCurrentCombo(ComboEvents startAction)
-    //{
-    //    get { return _FSM; }
-    //}
+    private void LateUpdate()
+    {
+        _FSM.LateUpdate();
+    }
 
     public void SetCurrentCombo(ComboEvents startAction) {
         SetNullCombo();
@@ -189,11 +187,16 @@ public class tmpMovement : MonoBehaviour
         Gizmos.color = Color.cyan;
         Gizmos.DrawCube(rightWallCheck.position, new Vector2(0.03f, 1f));
         Gizmos.DrawCube(leftWallCheck.position, new Vector2(0.03f, 1f));
+        
+        Gizmos.color = Color.magenta;
+        
+        Ray ray = new Ray(headRayCastPos.position, transform.forward);
+        Gizmos.DrawRay(ray.origin, transform.localScale);
     }
 
     public void ChangeDirection()
     {
-        if (this.rightWallCheck.position.x < this.leftWallCheck.position.x)
+        if (rightWallCheck.position.x < leftWallCheck.position.x)
         {
             var tmp = rightWallCheck;
             rightWallCheck = leftWallCheck;

@@ -7,7 +7,7 @@ public abstract class State
     protected Rigidbody2D RB;
     protected MovementData Data;
 
-    protected tmpMovement playerMovement;
+    protected ChController controller;
 
     protected Vector2 groundCheckSize;
     protected Vector2 wallCheckSize;
@@ -18,12 +18,12 @@ public abstract class State
 
     protected bool IsFacingRight;
     
-    public State(tmpMovement playerMovement)
+    public State(ChController controller)
     {
-        FSM = playerMovement.FSM;
-        RB = playerMovement.RB;
-        Data = playerMovement.data;
-        this.playerMovement = playerMovement;
+        FSM = controller.FSM;
+        RB = controller.RB;
+        Data = controller.data;
+        this.controller = controller;
 
         groundCheckSize = new Vector2(0.5f, 0.03f);
         wallCheckSize = new Vector2(0.03f, 1f);
@@ -46,38 +46,42 @@ public abstract class State
     public virtual void FixedUpdate()
     {
     }
-    
+
+    public virtual void LateUpdate()
+    {
+        
+    }
     protected bool IsFalling()
     {
-        return RB.velocity.y <= 0 && !Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+        return RB.velocity.y <= 0 && !Physics2D.OverlapBox(controller.groundCheck.position, groundCheckSize,
             0, groundLayer);
     }
 
     protected bool IsCanClimb()
     {
-        float distance = 0.5f;
-        return !Physics2D.Raycast(playerMovement.headRayCastPos.position, playerMovement.transform.forward,
+        float distance = 1f;
+        return !Physics2D.Raycast(controller.headRayCastPos.position, controller.transform.localScale,
             distance, groundLayer);
     }
 
     protected bool IsGrounded()
     {
-        return Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+        return Physics2D.OverlapBox(controller.groundCheck.position, groundCheckSize,
             0, groundLayer);
     }
 
     protected bool IsInAir()
     {
-        return !Physics2D.OverlapBox(playerMovement.groundCheck.position, groundCheckSize,
+        return !Physics2D.OverlapBox(controller.groundCheck.position, groundCheckSize,
             0, groundLayer);
     }
 
     
     protected bool IsTouchWall()
     {
-        return Physics2D.OverlapBox(playerMovement.rightWallCheck.position, wallCheckSize,
+        return Physics2D.OverlapBox(controller.rightWallCheck.position, wallCheckSize,
                    0, groundLayer) ||
-               Physics2D.OverlapBox(playerMovement.leftWallCheck.position, wallCheckSize,
+               Physics2D.OverlapBox(controller.leftWallCheck.position, wallCheckSize,
                    0, groundLayer);
     }
     
@@ -101,47 +105,26 @@ public abstract class State
                                                                     Data.runDeccelerationAmount * Data.deccelerationInAir;
     
         #endregion
-        
-        // тут была хуйня снизу
-        
+
         float speedDif = targetSpeed - RB.velocity.x;
     
         float movement = speedDif * accelerationRate;
     
         RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
-        
-        // if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(RB.velocity.y) < Data.jumpHangTimeThreshold)
-        // {
-        //     accelerationRate *= Data.jumpHangAccelerationMult;
-        //     targetSpeed *= Data.jumpHangMaxSpeedMult;
-        // }
-    
-        // #region Conserve Momentum
-        //
-        // if (Data.doConserveMomentum &&
-        //     Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) &&
-        //     Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) &&
-        //     Mathf.Abs(targetSpeed) > 0.01f &&
-        //     LastOnGroundTime < 0)
-        // {
-        //     accelerationRate = 0;
-        // }
-        //
-        // #endregion
     }
     
     public void OnJumpInput()
     {
-        playerMovement.LastPressedJumpTime = playerMovement.data.jumpInputBufferTime;
+        controller.LastPressedJumpTime = controller.data.jumpInputBufferTime;
     }
 
     public void OnDashInput()
     {
-        playerMovement.LastPressedDashTime = playerMovement.data.dashInputBufferTime;
+        controller.LastPressedDashTime = controller.data.dashInputBufferTime;
     }
 
     public void RechargeCoyoteTime()
     {
-        playerMovement.coyoteTime = playerMovement.data.coyoteTime;
+        controller.coyoteTime = controller.data.coyoteTime;
     }
 }

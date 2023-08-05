@@ -4,7 +4,7 @@ public class SlideState : OnWall
 {
     private bool _isTouchRightWall;
     private bool _isTouchLeftWall;
-    public SlideState(tmpMovement playerMovement) :
+    public SlideState(ChController playerMovement) :
         base(playerMovement)
     {
     }
@@ -33,14 +33,9 @@ public class SlideState : OnWall
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            FSM.SetState<WallJumpState>();
-        }
-
         if (RB.velocity.y >= 0 &&
             (_isTouchRightWall && _moveInput.x > 0 || 
-            _isTouchLeftWall && _moveInput.x < 0))
+             _isTouchLeftWall && _moveInput.x < 0))
         {
             FSM.SetState<GrapState>();
         }
@@ -53,6 +48,15 @@ public class SlideState : OnWall
         Slide();
     }
 
+    public override void LateUpdate()
+    {
+        base.LateUpdate();
+        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            FSM.SetState<WallJumpState>();
+        }
+    }
 
     private void Slide()
     {

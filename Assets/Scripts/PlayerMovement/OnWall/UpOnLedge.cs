@@ -4,7 +4,7 @@ public class UpOnLedge : OnWall
 {
 
     private Vector2 _moveInput;
-    public UpOnLedge(tmpMovement playerMovement) : base(playerMovement)
+    public UpOnLedge(ChController playerMovement) : base(playerMovement)
     {
         
     }

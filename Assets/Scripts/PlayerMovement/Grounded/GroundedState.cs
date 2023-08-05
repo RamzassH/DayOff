@@ -8,10 +8,10 @@ public class GroundedState : State
 {
     protected Transform playerTransform;
     
-    public GroundedState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public GroundedState(ChController controller) :
+        base(controller)
     {
-        playerTransform = playerMovement.transform;
+        playerTransform = controller.transform;
     }
 
     public override void Enter()
