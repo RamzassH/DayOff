@@ -4,8 +4,8 @@ using UnityEngine;
 public class JumpCutState : State
 {
     
-    public JumpCutState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public JumpCutState(ChController controller) :
+        base(controller)
     {
     }
 

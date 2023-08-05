@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BattleState : State
 {
-    public BattleState(tmpMovement tmp) : base(tmp)
+    public BattleState(ChController controller) : base(controller)
     { 
     
     }

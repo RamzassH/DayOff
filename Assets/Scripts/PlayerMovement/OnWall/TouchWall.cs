@@ -5,7 +5,7 @@ public class TouchWall : OnWall
     private bool _isInAir;
     private bool _isFalling;
 
-    public TouchWall(tmpMovement playerMovement) :
+    public TouchWall(ChController playerMovement) :
         base(playerMovement)
     {
     }
@@ -30,7 +30,7 @@ public class TouchWall : OnWall
 
         bool isTouchingRightWall = IsTouchingRightWall();
         bool isTouchingLeftWall = IsTouchingLeftWall();
-        
+
         if (IsCanClimb() && 
             (isTouchingRightWall && _moveInput.x > 0 ||
              isTouchingLeftWall && _moveInput.x < 0))

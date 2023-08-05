@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class DoubleJumpUpState : AirState
 {
-    public DoubleJumpUpState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public DoubleJumpUpState(ChController controller) :
+        base(controller)
     {
     }
 
@@ -15,12 +15,16 @@ public class DoubleJumpUpState : AirState
     public override void Exit()
     {
         base.Exit();
+        IsDoubleJumped = true;
     }
 
     public override void Update()
     {
         base.Update();
-        
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            FSM.SetState<DashState>();
+        }
         if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();

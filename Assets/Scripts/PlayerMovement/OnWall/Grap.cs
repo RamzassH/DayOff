@@ -5,8 +5,8 @@ public class GrapState : OnWall
     private bool _isTouchRightWall;
     private bool _isTouchLeftWall;
 
-    public GrapState(tmpMovement playerMovement) :
-        base(playerMovement)
+    public GrapState(ChController controller) :
+        base(controller)
     {
     }
 
@@ -31,7 +31,7 @@ public class GrapState : OnWall
 
         #region TIMERS
 
-        playerMovement.coyoteTime -= Time.deltaTime;
+        controller.coyoteTime -= Time.deltaTime;
 
         #endregion
 

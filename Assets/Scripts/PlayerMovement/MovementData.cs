@@ -29,41 +29,48 @@ public class MovementData : ScriptableObject
     [Range(0.01f, 1)] public float accelerationInAir; //Ускорение, которое действует на игрока в воздухе
     [Range(0.01f, 1)] public float deccelerationInAir;
 
-    [Space(5)]
-    public bool doConserveMomentum = true; //Если включено, то есть задержка перед остановкой
+    // [Space(5)]
+    // public bool doConserveMomentum = true; //Если включено, то есть задержка перед остановкой
 
     [Space(20)] 
     public float jumpHeight; //Стандартная высота прыжка
     public float jumpTimeToApex; //Время, которое должно пройти перед достижением максимальной высоты прыжка
+    public float doubleJumpTimeToApex;
+    public float jumpFallingGravityScale;
+    public float jumpVelocityFallOff;
+    [HideInInspector] public float doubleJumpForce;
     [HideInInspector] public float jumpForce; //Сила, прикладываемая к игроку во время прыжка
 
-    [Header("Both Jumps")] public int jumpCharge; //Колличество возможных подряд прыжков
+    //[Header("Both Jumps")] public int jumpCharge; //Колличество возможных подряд прыжков
     
     public float jumpCutGravityMultiplier; //Множитель накладывается на игрока, если тот нажимает "вниз" во время прыжка
 
-    [Range(0f, 1)]
-    public float jumpHangGravityMultiplier; //Чем игрок выше во время прыжка, тем слабее сила, которая тянет его вверх
-    public float jumpHangTimeThreshold; // Чем меньше скорость игрока, тем дольше он будет "зависать" в воздухе
+    // [Range(0f, 1)]
+    // public float jumpHangGravityMultiplier; //Чем игрок выше во время прыжка, тем слабее сила, которая тянет его вверх
+    // public float jumpHangTimeThreshold; // Чем меньше скорость игрока, тем дольше он будет "зависать" в воздухе
+    //
     
-    [Space(0.5f)]
-    public float jumpHangAccelerationMult; //Ускорение на игрока во время прыжка 
-    public float jumpHangMaxSpeedMult; //Множитель максимального ускорения на игрока
+    // [Space(0.5f)]
+    // public float jumpHangAccelerationMult; //Ускорение на игрока во время прыжка 
+    // public float jumpHangMaxSpeedMult; //Множитель максимального ускорения на игрока
 
+    
     [Header("Wall Jump")]
     public Vector2 wallJumpForce; //Сила прыжка игрока от стены
 
     [Space(5f)]
-    [Range(0f, 1f)] public float wallJumpRunLerp; //Если игрок прыгает от стены, то его скорость меньше
-    [Range(0f, 1.5f)] public float wallJumpTime; //Время на которое игрок замедляется после прыжка от стены
-    public bool doTurnOnWallJump; //При прижке игрок делает поворот
+    //[Range(0f, 1f)] public float wallJumpRunLerp; //Если игрок прыгает от стены, то его скорость меньше
+    //[Range(0f, 1.5f)] public float wallJumpTime; //Время на которое игрок замедляется после прыжка от стены
+    
+    //public bool doTurnOnWallJump; //При прижке игрок делает поворот
     
     [Space(20)]
     
     [Header("Slide")]
     public float slideAccel;
     public float slideSpeed;
-    public float slideEndSpeed;
-    public float slideInputBufferTime;
+    // public float slideEndSpeed;
+    // public float slideInputBufferTime;
     
     [Header("Assists")]
     [Range(0.01f, 0.5f)] public float coyoteTime; //Игрок не на земле, но в этот промежуток времени еще может прыгнуть
@@ -104,6 +111,7 @@ public class MovementData : ScriptableObject
         runDeccelerationAmount = (50 * runDecceleration) / runMaxSpeed;
         
         jumpForce = Mathf.Abs(gravityStrength) * jumpTimeToApex;
+        doubleJumpForce = Mathf.Abs(gravityStrength) * doubleJumpTimeToApex; 
 
         #region Variable Ranges
         runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
