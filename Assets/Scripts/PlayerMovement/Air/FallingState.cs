@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,8 +6,6 @@ using UnityEngine;
 
 public class FallingState : AirState
 {
-
-    private Vector2 _moveInput;
     public FallingState(ChController controller) :
         base(controller)
     {
@@ -33,6 +32,8 @@ public class FallingState : AirState
         #region TIMERS
 
         controller.coyoteTime -= Time.deltaTime;
+        controller.LastPressedDashTime -= Time.deltaTime;
+        controller.dashRechargeTime -= Time.deltaTime;
 
         #endregion
 
@@ -41,6 +42,11 @@ public class FallingState : AirState
         if (Input.GetAxisRaw("Jump") > 0)
         {
             OnJumpInput();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            OnDashInput();
         }
         
         _moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -59,16 +65,11 @@ public class FallingState : AirState
             FSM.SetState<DoubleJump>();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (controller.LastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
 
-        if (_moveInput.x != 0)
-        {
-            RB.AddForce(new Vector2(_moveInput.x * 30, RB.velocity.y));
-        }
-        
         if (IsGrounded())
         {
             IsDoubleJumped = false;
@@ -89,6 +90,17 @@ public class FallingState : AirState
         if (RB.velocity.y < -Data.maxFallSpeed)
         {
             RB.velocity = new Vector2(RB.velocity.x, -Data.maxFallSpeed);
+        }
+        
+        if (_moveInput.x != 0)
+        {
+            float force = _moveInput.x * Data.jumpHorizontalSpeed;
+            RB.AddForce(new Vector2(force, RB.velocity.y));
+        }
+
+        if (Math.Abs(RB.velocity.x) > Data.maxVelocityValueX)
+        {
+            RB.velocity = new Vector2(Data.maxVelocityValueX * Math.Sign(RB.velocity.x), RB.velocity.y);
         }
 
         base.FixedUpdate();

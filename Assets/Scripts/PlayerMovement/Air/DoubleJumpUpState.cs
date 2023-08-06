@@ -21,10 +21,20 @@ public class DoubleJumpUpState : AirState
     public override void Update()
     {
         base.Update();
+        controller.LastPressedDashTime -= Time.deltaTime;
+        controller.dashRechargeTime -= Time.deltaTime;
+
+
         if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            OnDashInput();
+        }
+
+        if (controller.LastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
+
         if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();

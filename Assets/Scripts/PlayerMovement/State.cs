@@ -120,7 +120,10 @@ public abstract class State
 
     public void OnDashInput()
     {
-        controller.LastPressedDashTime = controller.data.dashInputBufferTime;
+        if (controller.dashRechargeTime <= 0)
+        {
+            controller.LastPressedDashTime = controller.data.dashInputBufferTime;
+        } 
     }
 
     public void RechargeCoyoteTime()

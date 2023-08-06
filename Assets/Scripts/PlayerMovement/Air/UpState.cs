@@ -1,4 +1,5 @@
 using Unity.VisualScripting;
+using System;
 using UnityEngine;
 
 public class UpState : AirState
@@ -25,11 +26,19 @@ public class UpState : AirState
         #region TIMERS
 
         controller.coyoteTime -= Time.deltaTime;
+        controller.LastPressedDashTime -= Time.deltaTime;
+        controller.dashRechargeTime -= Time.deltaTime;
 
         #endregion
 
         _moveInput.y = Input.GetAxisRaw("Vertical");
-        
+        _moveInput.x = Input.GetAxisRaw("Horizontal");
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            OnDashInput();
+        }
+
         if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
@@ -44,7 +53,7 @@ public class UpState : AirState
         {
             FSM.SetState<DoubleJump>();
         }
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (controller.LastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
@@ -62,5 +71,21 @@ public class UpState : AirState
         {
             RB.velocity += Vector2.up * Physics.gravity.y * Data.fallGravityMultiplier * Time.deltaTime;
         }
+        if (RB.velocity.y < -Data.maxFallSpeed)
+        {
+            RB.velocity = new Vector2(RB.velocity.x, -Data.maxFallSpeed);
+        }
+        
+        if (_moveInput.x != 0)
+        {
+            float force = _moveInput.x * Data.jumpHorizontalSpeed;
+            RB.AddForce(new Vector2(force, RB.velocity.y), ForceMode2D.Force);
+        }
+
+        if (Math.Abs(RB.velocity.x) > Data.maxVelocityValueX)
+        {
+            RB.velocity = new Vector2(Data.maxVelocityValueX * Math.Sign(RB.velocity.x), RB.velocity.y);
+        }
+        
     }
 }

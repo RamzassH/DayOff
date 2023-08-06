@@ -27,8 +27,8 @@ public class RunState : GroundedState
     {
         controller.LastPressedJumpTime -= Time.deltaTime;
         controller.LastPressedDashTime -= Time.deltaTime;
-        
         controller.dashRechargeTime -= Time.deltaTime;
+        
         #region Input
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
