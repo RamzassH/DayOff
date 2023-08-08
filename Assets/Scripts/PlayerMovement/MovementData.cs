@@ -38,6 +38,8 @@ public class MovementData : ScriptableObject
     public float doubleJumpTimeToApex;
     public float jumpFallingGravityScale;
     public float jumpVelocityFallOff;
+    public float jumpHorizontalSpeed;
+    public float maxVelocityValueX;
     [HideInInspector] public float doubleJumpForce;
     [HideInInspector] public float jumpForce; //Сила, прикладываемая к игроку во время прыжка
 

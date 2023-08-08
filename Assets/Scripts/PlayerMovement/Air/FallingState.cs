@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -63,11 +64,6 @@ public class FallingState : AirState
         {
             FSM.SetState<DashState>();
         }
-
-        if (_moveInput.x != 0)
-        {
-            RB.AddForce(new Vector2(_moveInput.x * 30, RB.velocity.y));
-        }
         
         if (IsGrounded())
         {
@@ -89,6 +85,17 @@ public class FallingState : AirState
         if (RB.velocity.y < -Data.maxFallSpeed)
         {
             RB.velocity = new Vector2(RB.velocity.x, -Data.maxFallSpeed);
+        }
+
+        if (_moveInput.x != 0)
+        {
+            float force = _moveInput.x * Data.jumpHorizontalSpeed;
+            RB.AddForce(new Vector2(force, RB.velocity.y));
+        }
+
+        if (Math.Abs(RB.velocity.x) > Data.maxVelocityValueX)
+        {
+            RB.velocity = new Vector2(Data.maxVelocityValueX * Math.Sign(RB.velocity.x), RB.velocity.y);
         }
 
         base.FixedUpdate();
