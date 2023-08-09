@@ -26,9 +26,6 @@ public class FallingState : AirState
 
     public override void Update()
     {
-        
-        Debug.Log(IsDoubleJumped);
-        
         #region TIMERS
 
         controller.coyoteTime -= Time.deltaTime;

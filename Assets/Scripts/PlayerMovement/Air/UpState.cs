@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class UpState : AirState
 {
+    private float _jumpCutBlockTime;
+
     public UpState(ChController controller) :
         base(controller)
     {
@@ -12,6 +14,7 @@ public class UpState : AirState
     public override void Enter()
     {
         base.Enter();
+        _jumpCutBlockTime = Data.jumpCutBlockTimeBuffer;
     }
 
     public override void Exit()
@@ -28,8 +31,11 @@ public class UpState : AirState
         controller.coyoteTime -= Time.deltaTime;
         controller.LastPressedDashTime -= Time.deltaTime;
         controller.dashRechargeTime -= Time.deltaTime;
+        _jumpCutBlockTime -= Time.deltaTime;
 
         #endregion
+
+        #region INPUTS
 
         _moveInput.y = Input.GetAxisRaw("Vertical");
         _moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -38,6 +44,13 @@ public class UpState : AirState
         {
             OnDashInput();
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            FSM.SetState<DoubleJump>();
+        }
+
+        #endregion
 
         if (IsTouchWall())
         {
@@ -49,15 +62,12 @@ public class UpState : AirState
             FSM.SetState<FallingState>();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            FSM.SetState<DoubleJump>();
-        }
         if (controller.LastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
-        if (_moveInput.y < 0)
+
+        if (_moveInput.y < 0 && _jumpCutBlockTime <= 0)
         {
             FSM.SetState<JumpCutState>();
         }
@@ -71,11 +81,12 @@ public class UpState : AirState
         {
             RB.velocity += Vector2.up * Physics.gravity.y * Data.fallGravityMultiplier * Time.deltaTime;
         }
+
         if (RB.velocity.y < -Data.maxFallSpeed)
         {
             RB.velocity = new Vector2(RB.velocity.x, -Data.maxFallSpeed);
         }
-        
+
         if (_moveInput.x != 0)
         {
             float force = _moveInput.x * Data.jumpHorizontalSpeed;
@@ -86,6 +97,5 @@ public class UpState : AirState
         {
             RB.velocity = new Vector2(Data.maxVelocityValueX * Math.Sign(RB.velocity.x), RB.velocity.y);
         }
-        
     }
 }

@@ -11,8 +11,8 @@ public class WallJumpState : OnWall
     {
         base.Enter();
         WallJump();
-        FSM.SetState<UpState>();
         CameraShake.Instance.DoShakeCamera(3,0.1f);
+        FSM.SetState<DoubleJumpUpState>();
     }
 
     public override void Exit()
@@ -49,12 +49,13 @@ public class WallJumpState : OnWall
         {
             force.x -= RB.velocity.x;
         }
-
+        
         if (RB.velocity.y < 0)
         {
             force.y -= RB.velocity.y;
         }
-
+            
+        Debug.Log(force);
         RB.AddForce(force, ForceMode2D.Impulse);
 
         #endregion
