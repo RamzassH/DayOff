@@ -30,6 +30,8 @@ MonoBehaviour:
   doubleJumpTimeToApex: 0.5
   jumpFallingGravityScale: 4
   jumpVelocityFallOff: 0
+  jumpHorizontalSpeed: 10
+  maxVelocityValueX: 10
   doubleJumpForce: 12
   jumpForce: 12
   jumpCutGravityMultiplier: 5
