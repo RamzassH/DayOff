@@ -11,7 +11,7 @@ public class GroundedState : State
     public GroundedState(ChController controller) :
         base(controller)
     {
-        playerTransform = controller.transform;
+        playerTransform = controller.playerBody;
     }
 
     public override void Enter()

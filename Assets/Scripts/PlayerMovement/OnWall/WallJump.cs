@@ -11,8 +11,8 @@ public class WallJumpState : OnWall
     {
         base.Enter();
         WallJump();
-        FSM.SetState<UpState>();
         CameraShake.Instance.DoShakeCamera(3,0.1f);
+        FSM.SetState<DoubleJumpUpState>();
     }
 
     public override void Exit()
@@ -29,32 +29,33 @@ public class WallJumpState : OnWall
     {
         #region Perform Wall Jump
         
-        Vector2 tmp = new Vector2(controller.transform.localScale.x, 0);
+        Vector2 tmp = new Vector2(controller.playerBody.localScale.x, 0);
         
         if (tmp.x > 0 && IsTouchingRightWall() ||
             tmp.x < 0 && IsTouchingLeftWall())
         {
-            Vector3 scale = controller.transform.localScale;
+            Vector3 scale = controller.playerBody.localScale;
             scale.x *= -1;
             tmp.x *= -1;
-            controller.transform.localScale = scale;
-            controller.ChangeDirection();
+            controller.playerBody.localScale = scale;
+
         }
         
         Vector2 force = new Vector2(Data.wallJumpForce.x, Data.wallJumpForce.y);
         force.x *= tmp.x;
 
 
-        if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(force.x))
-        {
-            force.x -= RB.velocity.x;
-        }
-
-        if (RB.velocity.y < 0)
-        {
-            force.y -= RB.velocity.y;
-        }
-
+        //if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(force.x))
+        //{
+        //    force.x -= RB.velocity.x;
+        //}
+        //
+        //if (RB.velocity.y < 0)
+        //{
+        //    force.y -= RB.velocity.y;
+        //}
+            
+        Debug.Log(force);
         RB.AddForce(force, ForceMode2D.Impulse);
 
         #endregion

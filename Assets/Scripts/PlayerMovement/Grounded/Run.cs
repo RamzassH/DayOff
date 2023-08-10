@@ -27,8 +27,8 @@ public class RunState : GroundedState
     {
         controller.LastPressedJumpTime -= Time.deltaTime;
         controller.LastPressedDashTime -= Time.deltaTime;
-        
         controller.dashRechargeTime -= Time.deltaTime;
+        
         #region Input
 
         _moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -41,7 +41,7 @@ public class RunState : GroundedState
         {
             playerTransform.localScale = new Vector3(-1, 1, 1);
         }
-        controller.ChangeDirection();
+
         
         if (Input.GetKeyDown(KeyCode.Space))
         {

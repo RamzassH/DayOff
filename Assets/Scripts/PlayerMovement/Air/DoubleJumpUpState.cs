@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class DoubleJumpUpState : AirState
 {
@@ -21,10 +22,21 @@ public class DoubleJumpUpState : AirState
     public override void Update()
     {
         base.Update();
+        controller.LastPressedDashTime -= Time.deltaTime;
+        controller.dashRechargeTime -= Time.deltaTime;
+
+        #region INPUT
         if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            OnDashInput();
+        }
+        #endregion
+
+        if (controller.LastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
+
         if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
@@ -33,6 +45,23 @@ public class DoubleJumpUpState : AirState
         if (IsFalling())
         {
             FSM.SetState<FallingState>();
+        }
+    }
+    
+    
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+
+        if (RB.velocity.y < Data.jumpVelocityFallOff)
+        {
+            RB.velocity += Vector2.up * Physics.gravity.y * Data.fallGravityMultiplier * Time.deltaTime;
+        }
+
+        if (_moveInput.x != 0)
+        {
+            float force = _moveInput.x * Data.jumpHorizontalSpeed;
+            RB.AddForce(new Vector2(force, RB.velocity.y), ForceMode2D.Force);
         }
     }
 }

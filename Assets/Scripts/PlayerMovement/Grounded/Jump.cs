@@ -26,16 +26,16 @@ public class JumpState : GroundedState
     private void Jump()
     {
         #region Perform Jump
-
+    
         float force = Data.jumpForce;
         
         if (RB.velocity.y < 0)
         {
             force -= RB.velocity.y;
         }
-
+    
         RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
-
+    
         #endregion
     }
 }

@@ -13,6 +13,7 @@ public class ChController : MonoBehaviour
     public Transform rightWallCheck;
     public Transform leftWallCheck;
     public Transform headRayCastPos;
+    public Transform playerBody;
 
     public TextMeshProUGUI infoMovement;
     public TextMeshProUGUI infoCombo;
@@ -190,8 +191,8 @@ public class ChController : MonoBehaviour
         
         Gizmos.color = Color.magenta;
         
-        Ray ray = new Ray(headRayCastPos.position, transform.forward);
-        Gizmos.DrawRay(ray.origin, transform.localScale);
+        Ray ray = new Ray(headRayCastPos.position, playerBody.forward);
+        Gizmos.DrawRay(ray.origin, playerBody.localScale);
     }
 
     public void ChangeDirection()

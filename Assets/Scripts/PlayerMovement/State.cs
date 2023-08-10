@@ -60,7 +60,7 @@ public abstract class State
     protected bool IsCanClimb()
     {
         float distance = 1f;
-        return !Physics2D.Raycast(controller.headRayCastPos.position, controller.transform.localScale,
+        return !Physics2D.Raycast(controller.headRayCastPos.position, controller.playerBody.localScale,
             distance, groundLayer);
     }
 
@@ -120,7 +120,10 @@ public abstract class State
 
     public void OnDashInput()
     {
-        controller.LastPressedDashTime = controller.data.dashInputBufferTime;
+        if (controller.dashRechargeTime <= 0)
+        {
+            controller.LastPressedDashTime = controller.data.dashInputBufferTime;
+        } 
     }
 
     public void RechargeCoyoteTime()
