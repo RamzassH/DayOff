@@ -45,15 +45,15 @@ public class WallJumpState : OnWall
         force.x *= tmp.x;
 
 
-        if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(force.x))
-        {
-            force.x -= RB.velocity.x;
-        }
-        
-        if (RB.velocity.y < 0)
-        {
-            force.y -= RB.velocity.y;
-        }
+        // if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(force.x))
+        // {
+        //     force.x -= RB.velocity.x;
+        // }
+        //
+        // if (RB.velocity.y < 0)
+        // {
+        //     force.y -= RB.velocity.y;
+        // }
             
         Debug.Log(force);
         RB.AddForce(force, ForceMode2D.Impulse);
