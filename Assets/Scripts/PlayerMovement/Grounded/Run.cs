@@ -41,7 +41,7 @@ public class RunState : GroundedState
         {
             playerTransform.localScale = new Vector3(-1, 1, 1);
         }
-        controller.ChangeDirection();
+
         
         if (Input.GetKeyDown(KeyCode.Space))
         {

@@ -26,6 +26,7 @@ public class FallingState : AirState
 
     public override void Update()
     {
+        base.Update();
         #region TIMERS
 
         controller.coyoteTime -= Time.deltaTime;
@@ -45,9 +46,6 @@ public class FallingState : AirState
         {
             OnDashInput();
         }
-        
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-
         #endregion
 
         if (controller.coyoteTime > 0 &&
@@ -79,27 +77,16 @@ public class FallingState : AirState
             FSM.SetState<TouchWall>();
         }
         
-        base.Update();
+
     }
 
     public override void FixedUpdate()
     {
-        if (RB.velocity.y < -Data.maxFallSpeed)
-        {
-            RB.velocity = new Vector2(RB.velocity.x, -Data.maxFallSpeed);
-        }
-        
         if (_moveInput.x != 0)
         {
             float force = _moveInput.x * Data.jumpHorizontalSpeed;
             RB.AddForce(new Vector2(force, RB.velocity.y));
         }
-
-        if (Math.Abs(RB.velocity.x) > Data.maxVelocityValueX)
-        {
-            RB.velocity = new Vector2(Data.maxVelocityValueX * Math.Sign(RB.velocity.x), RB.velocity.y);
-        }
-
         base.FixedUpdate();
     }
 }

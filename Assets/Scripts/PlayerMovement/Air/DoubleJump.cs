@@ -11,7 +11,7 @@ public class DoubleJump : AirState
     {
         base.Enter();
         Jump();
-        CameraShake.Instance.DoShakeCamera(5f, 0.2f);
+        CameraShake.Instance.DoShakeCamera(4f,0.2f);
         FSM.SetState<DoubleJumpUpState>();
     }
 

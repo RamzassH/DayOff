@@ -37,6 +37,7 @@ public class MovementData : ScriptableObject
     public float jumpVelocityFallOff;
     public float jumpHorizontalSpeed;
     public float maxVelocityValueX;
+    public float maxVelocityValueY;
     public float jumpCutBlockTimeBuffer;
     [HideInInspector] public float doubleJumpForce;
     [HideInInspector] public float jumpForce; //Сила, прикладываемая к игроку во время прыжка

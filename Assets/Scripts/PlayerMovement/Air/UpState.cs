@@ -37,9 +37,6 @@ public class UpState : AirState
 
         #region INPUTS
 
-        _moveInput.y = Input.GetAxisRaw("Vertical");
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             OnDashInput();
@@ -75,27 +72,16 @@ public class UpState : AirState
 
     public override void FixedUpdate()
     {
-        base.FixedUpdate();
-
         if (RB.velocity.y < Data.jumpVelocityFallOff)
         {
             RB.velocity += Vector2.up * Physics.gravity.y * Data.fallGravityMultiplier * Time.deltaTime;
         }
-
-        if (RB.velocity.y < -Data.maxFallSpeed)
-        {
-            RB.velocity = new Vector2(RB.velocity.x, -Data.maxFallSpeed);
-        }
-
         if (_moveInput.x != 0)
         {
             float force = _moveInput.x * Data.jumpHorizontalSpeed;
             RB.AddForce(new Vector2(force, RB.velocity.y), ForceMode2D.Force);
         }
 
-        if (Math.Abs(RB.velocity.x) > Data.maxVelocityValueX)
-        {
-            RB.velocity = new Vector2(Data.maxVelocityValueX * Math.Sign(RB.velocity.x), RB.velocity.y);
-        }
+        base.FixedUpdate();
     }
 }

@@ -23,6 +23,13 @@ public class CameraShake : MonoBehaviour
         _cbmcp.m_AmplitudeGain = shakeIntensity;
         _timer = time;
     }
+
+    private void StopShakeCamera()
+    {
+        CinemachineBasicMultiChannelPerlin _cbmcp = _cinemachineVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        _cbmcp.m_AmplitudeGain = 0;
+        _timer = 0;
+    }
     
     private void Update()
     {
@@ -32,9 +39,7 @@ public class CameraShake : MonoBehaviour
 
             if (_timer < 0)
             {
-                CinemachineBasicMultiChannelPerlin _cbmcp =
-                    _cinemachineVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-                _cbmcp.m_AmplitudeGain = 0f;
+                StopShakeCamera();
             }
         }
     }

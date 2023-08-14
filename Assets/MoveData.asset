@@ -30,6 +30,7 @@ MonoBehaviour:
   jumpVelocityFallOff: 0
   jumpHorizontalSpeed: 40
   maxVelocityValueX: 10
+  maxVelocityValueY: 20
   jumpCutBlockTimeBuffer: 0.2
   doubleJumpForce: 12
   jumpForce: 12

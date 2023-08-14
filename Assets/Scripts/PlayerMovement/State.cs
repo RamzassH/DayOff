@@ -60,7 +60,7 @@ public abstract class State
     protected bool IsCanClimb()
     {
         float distance = 1f;
-        return !Physics2D.Raycast(controller.headRayCastPos.position, controller.transform.localScale,
+        return !Physics2D.Raycast(controller.headRayCastPos.position, controller.playerBody.localScale,
             distance, groundLayer);
     }
 
