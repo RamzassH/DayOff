@@ -7,6 +7,10 @@ TagManager:
   - checkGround
   - checkRightWall
   - checkLeftWall
+  - Head
+  - Body
+  - Legs
+  - Weapon
   layers:
   - Default
   - TransparentFX

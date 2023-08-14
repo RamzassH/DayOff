@@ -3,7 +3,7 @@ using UnityEngine;
 public class LightAttackState : BattleState
 {
 
-    // Animator
+    private bool attackAnimation = false;
     private float _endAttackTime;
     private float _nextAttackInputBuffer;
     private float _timer;
@@ -15,7 +15,8 @@ public class LightAttackState : BattleState
         _endAttackTime = 0.5f;
         _nextAttackInputBuffer = 0.3f;
         _timer = 0f;
-        
+        controller.Animator.SetBool("Attack1", true);
+        attackAnimation = true;
         // _isInput = false;
         // _isInputLightAttack = false;
         // _isInputHeavyAttack = false;
@@ -28,6 +29,11 @@ public class LightAttackState : BattleState
     {
         base.Update();
         _timer += Time.deltaTime;
+        if (attackAnimation) 
+        { 
+            attackAnimation = false;
+            controller.Animator.SetBool("Attack1", false);
+        }
         
         if (Input.GetAxis("Fire1") > 0 && _timer >= _nextAttackInputBuffer)
         {

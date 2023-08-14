@@ -15,6 +15,10 @@ public class ChController : MonoBehaviour
     public Transform headRayCastPos;
     public Transform playerBody;
 
+    public float damage;
+
+    [SerializeField] private Animator animator;
+
     public TextMeshProUGUI infoMovement;
     public TextMeshProUGUI infoCombo;
 
@@ -46,6 +50,10 @@ public class ChController : MonoBehaviour
     public Rigidbody2D RB
     {
         get { return _RB; }
+    }
+
+    public Animator Animator {
+        get { return animator; }
     }
 
     public void Awake()
@@ -104,6 +112,7 @@ public class ChController : MonoBehaviour
         //_FSM.SetState<BattleIDLEState>();
         _currentComboList = new List<Combo>();
         _indexAttackInCombo = 0;
+        damage = 30f;
     }
 
     void Update()

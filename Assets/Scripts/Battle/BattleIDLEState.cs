@@ -58,4 +58,5 @@ public class BattleIDLEState : BattleState
         base.FixedUpdate();
     }
 
+    
 }
