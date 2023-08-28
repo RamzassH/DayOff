@@ -29,6 +29,7 @@ public class LightAttackState : BattleState
     {
         base.Update();
         _timer += Time.deltaTime;
+        Attack();
         if (attackAnimation) 
         { 
             attackAnimation = false;

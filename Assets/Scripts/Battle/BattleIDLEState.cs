@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Searcher;
 using UnityEngine;
 
 public class BattleIDLEState : BattleState
@@ -18,12 +19,29 @@ public class BattleIDLEState : BattleState
     }
 
     public override void Exit() { base.Exit();}
-    
+
     public override void Update()
     {
         base.Update();
+        
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            controller.Animator.SetInteger("ChangeStance", 1);
+            Debug.Log("1");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            controller.Animator.SetInteger("ChangeStance", 2);
+            Debug.Log("2");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            controller.Animator.SetInteger("ChangeStance", 3);
+            Debug.Log("3");
+        }
+    
 
-        if (Input.GetAxis("Fire1") > 0 || 
+    if (Input.GetAxis("Fire1") > 0 || 
             _startAction == ComboEvents.LightAttack) 
         {
             controller.SetCurrentCombo(ComboEvents.LightAttack);

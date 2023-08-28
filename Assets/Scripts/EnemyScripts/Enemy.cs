@@ -6,11 +6,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private float headHP = 100f;
-    private float bodyHP = 100f;
-    private float legsHP = 100f;
-
-
+    private float _headHP = 100f;
+    private float _bodyHP = 100f;
+    private float _legsHP = 100f;
 
     private void Dead() 
     { 
@@ -22,28 +20,31 @@ public class Enemy : MonoBehaviour
         switch (sigment) 
         {
             case Sigment.Head:
-                headHP -= damage;
+                _headHP -= damage;
                 break;
             case Sigment.Body: 
-                bodyHP -= damage;
+                _bodyHP -= damage;
                 break;
             case Sigment.Legs: 
-                legsHP -= damage;
+                _legsHP -= damage;
                 break;
+        }
+
+        if (isDead())
+        {
+            Dead();
         }
     }
 
     private bool isDead() 
     { 
-        return headHP < 0f || bodyHP < 0f || legsHP < 0f;
+        return _headHP < 0f || 
+               _bodyHP < 0f || 
+               _legsHP < 0f;
     }
 
     private void Update()
     {
-        if (isDead()) 
-        { 
-            Dead();
-        }
     }
 
 }

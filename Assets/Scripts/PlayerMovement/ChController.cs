@@ -15,6 +15,8 @@ public class ChController : MonoBehaviour
     public Transform headRayCastPos;
     public Transform playerBody;
 
+    public Collider2D swordCollider;
+    
     public float damage;
 
     [SerializeField] private Animator animator;
