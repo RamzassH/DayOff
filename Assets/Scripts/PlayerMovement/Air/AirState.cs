@@ -9,11 +9,39 @@ public class AirState : State
     {
     }
 
+    public override void Enter()
+    {
+        controller.playerInput.Player.Jump.Reset();
+    }
+
     public override void Update()
     {
         base.Update();
-        _moveInput.y = Input.GetAxisRaw("Vertical");
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
+
+        #region TIMERS
+        
+        controller.coyoteTime -= Time.deltaTime;
+        controller.lastPressedJumpTime -= Time.deltaTime;
+        controller.lastPressedDashTime -= Time.deltaTime;
+        controller.dashRechargeTime -= Time.deltaTime;
+
+        #endregion
+
+        #region INPUT
+
+        _moveInput = controller.playerInput.Player.Move.ReadValue<Vector2>();
+
+        if(controller.playerInput.Player.Jump.ReadValue<float>() > 0.1)
+        {
+            OnJumpInput();
+        }
+        
+        if (controller.playerInput.Player.Dash.ReadValue<float>() > 0.1
+            && controller.dashRechargeTime < 0)
+        {
+            OnDashInput();
+        }
+        
         if (_moveInput.x > 0)
         {
             controller.playerBody.localScale = new Vector3(1, 1, 1);
@@ -22,12 +50,16 @@ public class AirState : State
         {
             controller.playerBody.localScale = new Vector3(-1, 1, 1);
         }
+        
+        #endregion
 
     }
 
     public override void FixedUpdate()
     {
         base.FixedUpdate();
+
+        #region VELOCITY
 
         if (RB.velocity.y < -Data.maxFallSpeed)
         {
@@ -42,5 +74,7 @@ public class AirState : State
         {
             RB.velocity = new Vector2(Data.maxVelocityValueX * Math.Sign(RB.velocity.x), RB.velocity.y);
         }
+        
+        #endregion
     }
 }

@@ -47,6 +47,11 @@ public abstract class State
     {
     }
 
+    public virtual void Awake()
+    {
+        
+    }
+
     public virtual void LateUpdate()
     {
         
@@ -115,14 +120,14 @@ public abstract class State
     
     public void OnJumpInput()
     {
-        controller.LastPressedJumpTime = controller.data.jumpInputBufferTime;
+        controller.lastPressedJumpTime = controller.data.jumpInputBufferTime;
     }
 
     public void OnDashInput()
     {
         if (controller.dashRechargeTime <= 0)
         {
-            controller.LastPressedDashTime = controller.data.dashInputBufferTime;
+            controller.lastPressedDashTime = controller.data.dashInputBufferTime;
         } 
     }
 

@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class IDLE : GroundedState
 {
@@ -17,43 +19,26 @@ public class IDLE : GroundedState
         base.Exit();
     }
 
+    private void OnEnable()
+    {
+        controller.playerInput.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controller.playerInput.Disable();
+    }
+
+    public override void Awake()
+    {
+        base.Awake();
+    }
+
+
     public override void Update()
     {
         base.Update();
-
-        #region TIMERS
         
-        controller.coyoteTime = controller.data.coyoteTime;
-
-        controller.LastPressedJumpTime -= Time.deltaTime;
-        controller.LastPressedDashTime -= Time.deltaTime;
-        
-        controller.dashRechargeTime -= Time.deltaTime;
-        
-        if (controller.dashRechargeTime < -100f)
-        {
-            controller.dashRechargeTime = 0;
-        }
-        #endregion
-        
-        #region INPUT
-
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-        _moveInput.y = Input.GetAxisRaw("Vertical");
-
-        if (Input.GetAxisRaw("Jump") > 0)
-        {
-            OnJumpInput();
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) && 
-            controller.dashRechargeTime < 0)
-        {
-            OnDashInput();
-        }
-
-        #endregion
-
         if (IsTouchWall())
         {
             FSM.SetState<TouchWall>();
@@ -64,12 +49,12 @@ public class IDLE : GroundedState
             FSM.SetState<RunState>();
         }
 
-        if (controller.LastPressedJumpTime > 0)
+        if (controller.lastPressedJumpTime > 0)
         {
             FSM.SetState<JumpState>();
         }
 
-        if (controller.LastPressedDashTime > 0 && 
+        if (controller.lastPressedDashTime > 0 && 
             controller.dashRechargeTime < 0)
         {
             FSM.SetState<DashState>();

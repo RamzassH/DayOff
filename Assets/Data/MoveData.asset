@@ -34,7 +34,7 @@ MonoBehaviour:
   jumpCutBlockTimeBuffer: 0.2
   doubleJumpForce: 12
   jumpForce: 12
-  wallJumpForce: {x: 10, y: 10}
+  wallJumpForce: {x: 10, y: 20}
   slideAccel: 12
   slideSpeed: 2
   coyoteTime: 0.01

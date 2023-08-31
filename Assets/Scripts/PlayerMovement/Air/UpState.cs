@@ -15,6 +15,7 @@ public class UpState : AirState
     {
         base.Enter();
         _jumpCutBlockTime = Data.jumpCutBlockTimeBuffer;
+        controller.lastPressedJumpTime = -1;
     }
 
     public override void Exit()
@@ -26,26 +27,9 @@ public class UpState : AirState
     {
         base.Update();
 
-        #region TIMERS
-
-        controller.coyoteTime -= Time.deltaTime;
-        controller.LastPressedDashTime -= Time.deltaTime;
-        controller.dashRechargeTime -= Time.deltaTime;
+        #region TIMER
+        
         _jumpCutBlockTime -= Time.deltaTime;
-
-        #endregion
-
-        #region INPUTS
-
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            OnDashInput();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            FSM.SetState<DoubleJump>();
-        }
 
         #endregion
 
@@ -59,11 +43,16 @@ public class UpState : AirState
             FSM.SetState<FallingState>();
         }
 
-        if (controller.LastPressedDashTime > 0)
+        if (controller.lastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
-
+        
+        if (controller.lastPressedJumpTime > 0)
+        {
+            FSM.SetState<DoubleJump>();
+        }
+        
         if (_moveInput.y < 0 && _jumpCutBlockTime <= 0)
         {
             FSM.SetState<JumpCutState>();

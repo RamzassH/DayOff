@@ -2,30 +2,40 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ChController : MonoBehaviour
 {
     public MovementData data;
     private StateMachine _FSM;
     private Rigidbody2D _RB;
-    
+
+    #region Transform
+
     public Transform groundCheck;
     public Transform rightWallCheck;
     public Transform leftWallCheck;
     public Transform headRayCastPos;
     public Transform playerBody;
 
-    public Collider2D swordCollider;
-    
-    public float damage;
+    #endregion
 
+    #region Colliders
+
+    public Collider2D swordCollider;
+
+    #endregion
+    
     [SerializeField] private Animator animator;
 
+    #region Debug
+    
     public TextMeshProUGUI infoMovement;
     public TextMeshProUGUI infoCombo;
 
-    [SerializeField] private List<Combo> comboList;
+    #endregion
 
+    [SerializeField] private List<Combo> comboList;
     private List<Combo> _currentComboList;
     private int _indexAttackInCombo;
     
@@ -37,13 +47,14 @@ public class ChController : MonoBehaviour
 
     public float dashRechargeTime;
     
-    public float LastPressedJumpTime;
+    public float lastPressedJumpTime;
 
-    public float LastPressedDashTime;
+    public float lastPressedDashTime;
 
     #endregion
-
-
+    
+    public PlayerInput playerInput;
+    
     public StateMachine FSM
     {
         get { return _FSM; }
@@ -58,10 +69,22 @@ public class ChController : MonoBehaviour
         get { return animator; }
     }
 
+    private void OnEnable()
+    {
+        playerInput.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerInput.Disable();
+    }
+
     public void Awake()
     {
+        playerInput = new PlayerInput();
         _RB = GetComponent<Rigidbody2D>();
         _FSM = new StateMachine();
+        _FSM.Awake();
 
         #region GRAVITY
 
@@ -111,10 +134,8 @@ public class ChController : MonoBehaviour
     void Start()
     {
         _FSM.SetState<IDLE>();
-        //_FSM.SetState<BattleIDLEState>();
         _currentComboList = new List<Combo>();
         _indexAttackInCombo = 0;
-        damage = 30f;
     }
 
     void Update()

@@ -25,31 +25,19 @@ public class TouchWall : OnWall
         base.Update();
         _isInAir = IsInAir();
         _isFalling = IsFalling();
-        controller.LastPressedJumpTime -= Time.deltaTime;
         
-        #region INPUT
-
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-
-        if (Input.GetAxisRaw("Jump") > 0)
-        {
-            OnJumpInput();
-        }
-
-        #endregion
-
         bool isTouchingRightWall = IsTouchingRightWall();
         bool isTouchingLeftWall = IsTouchingLeftWall();
 
-        if (controller.LastPressedJumpTime > 0 && _isInAir)
+        if (controller.lastPressedJumpTime > 0 && _isInAir)
         {
-            controller.LastPressedJumpTime = 0f;
+            controller.lastPressedJumpTime = 0f;
             FSM.SetState<WallJumpState>();
             return;
         }
         
         if (!_isInAir &&
-            Input.GetKeyDown(KeyCode.Space))
+            controller.lastPressedJumpTime > 0)
         {
             FSM.SetState<JumpState>();
             return;
@@ -87,7 +75,7 @@ public class TouchWall : OnWall
             return;
         }
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (controller.lastPressedJumpTime > 0)
         {
             FSM.SetState<DashState>();
             return;

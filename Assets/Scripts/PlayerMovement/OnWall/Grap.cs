@@ -29,21 +29,13 @@ public class GrapState : OnWall
     {
         base.Update();
 
-        #region TIMERS
-
-        controller.coyoteTime -= Time.deltaTime;
-
-        #endregion
-
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-
         if (!(_isTouchRightWall && _moveInput.x > 0 ||
-            _isTouchLeftWall && _moveInput.x < 0))
+              _isTouchLeftWall && _moveInput.x < 0))
         {
             FSM.SetState<TouchWall>();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (controller.lastPressedJumpTime > 0)
         {
             FSM.SetState<WallJumpState>();
         }
@@ -51,11 +43,5 @@ public class GrapState : OnWall
     
     public override void FixedUpdate()
     {
-        // Grap();
     }
-
-    // private void Grap()
-    // {
-    //     RB.velocity = new Vector2(RB.velocity.x, 0);
-    // }
 }

@@ -11,8 +11,9 @@ public class JumpState : GroundedState
     public override void Enter()
     {
         base.Enter();
-        controller.LastPressedJumpTime = 0;
-        float jumpForceMultiplier = Data.jumpForce;
+        controller.lastPressedJumpTime = 0;
+        //float jumpForceMultiplier = Data.jumpForce;
+        
         Jump();
         FSM.SetState<UpState>();
     }

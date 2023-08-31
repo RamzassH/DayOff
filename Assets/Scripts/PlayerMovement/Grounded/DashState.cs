@@ -14,9 +14,11 @@ public class DashState : GroundedState
     public override void Enter()
     {
         base.Enter();
-        controller.LastPressedDashTime = 0;
+        
+        controller.lastPressedDashTime = 0;
         RB.gravityScale = 0;
         Vector2 direction = new Vector2(playerTransform.localScale.x, 0);
+        
         CameraShake.Instance.DoShakeCamera(2f,0.2f);
         controller.StartCoroutine(StartDash(direction));
     }
@@ -31,12 +33,6 @@ public class DashState : GroundedState
     public override void Update()
     {
         base.Update();
-        
-        #region INPUT
-
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-
-        #endregion
         
         if (IsTouchWall())
         {

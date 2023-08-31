@@ -43,18 +43,7 @@ public class WallJumpState : OnWall
         
         Vector2 force = new Vector2(Data.wallJumpForce.x, Data.wallJumpForce.y);
         force.x *= tmp.x;
-
-
-        //if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(force.x))
-        //{
-        //    force.x -= RB.velocity.x;
-        //}
-        //
-        //if (RB.velocity.y < 0)
-        //{
-        //    force.y -= RB.velocity.y;
-        //}
-            
+        
         Debug.Log(force);
         RB.AddForce(force, ForceMode2D.Impulse);
 

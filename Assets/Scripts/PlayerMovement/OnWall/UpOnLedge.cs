@@ -2,8 +2,6 @@
 
 public class UpOnLedge : OnWall
 {
-
-    private Vector2 _moveInput;
     public UpOnLedge(ChController playerMovement) : base(playerMovement)
     {
         
@@ -26,7 +24,6 @@ public class UpOnLedge : OnWall
     {
         base.Update();
 
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
         bool isTouchingRightWall = IsTouchingRightWall();
         bool isTouchingLeftWall = IsTouchingLeftWall();
 
@@ -36,12 +33,12 @@ public class UpOnLedge : OnWall
             FSM.SetState<TouchWall>();
         }
 
-        if (Input.GetAxisRaw("Vertical") > 0)
+        if (_moveInput.x > 0)
         {
             //TODO Сделать подъем
         }
 
-        if (Input.GetAxisRaw("Jump") > 0)
+        if (controller.lastPressedJumpTime > 0)
         {
             FSM.SetState<WallJumpState>();
         }

@@ -27,40 +27,20 @@ public class FallingState : AirState
     public override void Update()
     {
         base.Update();
-        #region TIMERS
-
-        controller.coyoteTime -= Time.deltaTime;
-        controller.LastPressedDashTime -= Time.deltaTime;
-        controller.dashRechargeTime -= Time.deltaTime;
-
-        #endregion
-
-        #region INPUT
-
-        if (Input.GetAxisRaw("Jump") > 0)
-        {
-            OnJumpInput();
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            OnDashInput();
-        }
-        #endregion
-
+        
         if (controller.coyoteTime > 0 &&
-            controller.LastPressedJumpTime > 0)
+            controller.lastPressedJumpTime > 0)
         {
             controller.coyoteTime = 0;
             FSM.SetState<JumpState>();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsDoubleJumped == false) 
+        if (controller.lastPressedJumpTime > 0 && IsDoubleJumped == false) 
         {
             FSM.SetState<DoubleJump>();
         }
 
-        if (controller.LastPressedDashTime > 0)
+        if (controller.lastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
@@ -76,8 +56,6 @@ public class FallingState : AirState
             IsDoubleJumped = false;
             FSM.SetState<TouchWall>();
         }
-        
-
     }
 
     public override void FixedUpdate()

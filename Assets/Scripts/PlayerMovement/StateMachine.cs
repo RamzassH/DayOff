@@ -33,6 +33,11 @@ public class StateMachine
         }
     }
 
+    public void Awake()
+    {
+        _currentState?.Awake();
+    }
+    
     public void Update()
     {
         _currentState?.Update();

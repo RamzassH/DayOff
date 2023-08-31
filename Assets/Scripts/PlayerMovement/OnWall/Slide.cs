@@ -25,8 +25,6 @@ public class SlideState : OnWall
     {
         base.Update();
 
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-
         if (_moveInput.x == 0)
         {
             FSM.SetState<TouchWall>();
@@ -52,7 +50,7 @@ public class SlideState : OnWall
     {
         base.LateUpdate();
         
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (controller.lastPressedJumpTime > 0)
         {
             FSM.SetState<WallJumpState>();
         }

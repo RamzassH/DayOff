@@ -22,17 +22,8 @@ public class DoubleJumpUpState : AirState
     public override void Update()
     {
         base.Update();
-        controller.LastPressedDashTime -= Time.deltaTime;
-        controller.dashRechargeTime -= Time.deltaTime;
-
-        #region INPUT
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            OnDashInput();
-        }
-        #endregion
-
-        if (controller.LastPressedDashTime > 0)
+        
+        if (controller.lastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
@@ -53,6 +44,8 @@ public class DoubleJumpUpState : AirState
     {
         base.FixedUpdate();
 
+        #region VELOCITY CONTROL
+
         if (RB.velocity.y < Data.jumpVelocityFallOff)
         {
             RB.velocity += Vector2.up * Physics.gravity.y * Data.fallGravityMultiplier * Time.deltaTime;
@@ -63,5 +56,7 @@ public class DoubleJumpUpState : AirState
             float force = _moveInput.x * Data.jumpHorizontalSpeed;
             RB.AddForce(new Vector2(force, RB.velocity.y), ForceMode2D.Force);
         }
+
+        #endregion
     }
 }

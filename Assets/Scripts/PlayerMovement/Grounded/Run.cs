@@ -25,44 +25,12 @@ public class RunState : GroundedState
 
     public override void Update()
     {
-        controller.LastPressedJumpTime -= Time.deltaTime;
-        controller.LastPressedDashTime -= Time.deltaTime;
-        controller.dashRechargeTime -= Time.deltaTime;
-        
-        #region Input
-
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-
-        if (_moveInput.x > 0)
-        {
-            playerTransform.localScale = new Vector3(1, 1, 1);
-        }
-        else if (_moveInput.x < 0)
-        {
-            playerTransform.localScale = new Vector3(-1, 1, 1);
-        }
-
-        
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnJumpInput();
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) && 
-            controller.dashRechargeTime < 0)
-        {
-            OnDashInput();
-        }
-        
-        #endregion
-        
-        
-        if (controller.LastPressedJumpTime > 0)
+        if (controller.lastPressedJumpTime > 0)
         {
             FSM.SetState<JumpState>();
         }
 
-        if (controller.LastPressedDashTime > 0)
+        if (controller.lastPressedDashTime > 0)
         {
             FSM.SetState<DashState>();
         }
