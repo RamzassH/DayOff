@@ -56,6 +56,7 @@ public abstract class State
     {
         
     }
+
     protected bool IsFalling()
     {
         return RB.velocity.y <= 0 && !Physics2D.OverlapBox(controller.groundCheck.position, groundCheckSize,

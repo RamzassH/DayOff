@@ -142,6 +142,10 @@ public class ChController : MonoBehaviour
     {
         _FSM.Update();
         infoMovement.text = _FSM.GetCurrentState().ToString();
+        if (_RB.velocity.y > 20)
+        {
+            Debug.Log(_RB.velocity.y);
+        }
         if (_currentComboList.Count == 0)
         {
             infoCombo.text = "None Combo";

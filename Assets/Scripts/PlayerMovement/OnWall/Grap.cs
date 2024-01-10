@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class GrapState : OnWall
@@ -43,5 +44,6 @@ public class GrapState : OnWall
     
     public override void FixedUpdate()
     {
+        base.FixedUpdate();
     }
 }

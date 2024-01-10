@@ -54,6 +54,7 @@ public class FallingState : AirState
         if (IsTouchWall())
         {
             IsDoubleJumped = false;
+            Debug.Log(IsTouchWall());
             FSM.SetState<TouchWall>();
         }
     }

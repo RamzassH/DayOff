@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class JumpState : GroundedState
 {
+    private float timer;
+
     public JumpState(ChController controller) :
         base(controller)
     {
@@ -12,10 +14,22 @@ public class JumpState : GroundedState
     {
         base.Enter();
         controller.lastPressedJumpTime = 0;
+        timer = 0;
         //float jumpForceMultiplier = Data.jumpForce;
         
         Jump();
-        FSM.SetState<UpState>();
+        //FSM.SetState<UpState>();
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        if (timer > 0.15)
+        {
+            FSM.SetState<UpState>();
+            return;
+        }
+        timer += Time.deltaTime;
     }
 
     public override void Exit()

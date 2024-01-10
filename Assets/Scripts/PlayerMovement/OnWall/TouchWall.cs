@@ -75,6 +75,21 @@ public class TouchWall : OnWall
             return;
         }
 
+        if (!_isInAir && !_isFalling &&
+            !isTouchingRightWall &&
+            !isTouchingLeftWall)
+        {
+            FSM.SetState<IDLE>();
+            return;
+        }
+        if (_isInAir && !_isFalling &&
+            !isTouchingRightWall &&
+            !isTouchingLeftWall)
+        {
+            FSM.SetState<UpState>();
+            return;
+        }
+
         if (controller.lastPressedJumpTime > 0)
         {
             FSM.SetState<DashState>();

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class WallJumpState : OnWall
 {
+    private float timer;
+
     public WallJumpState(ChController controller) :
         base(controller)
     {
@@ -12,7 +14,8 @@ public class WallJumpState : OnWall
         base.Enter();
         WallJump();
         CameraShake.Instance.DoShakeCamera(3,0.1f);
-        FSM.SetState<DoubleJumpUpState>();
+        timer = 0;
+        //FSM.SetState<DoubleJumpUpState>();
     }
 
     public override void Exit()
@@ -23,6 +26,12 @@ public class WallJumpState : OnWall
     public override void Update()
     {
         base.Update();
+        if (timer > 0.15)
+        {
+            FSM.SetState<DoubleJumpUpState>();
+            return;
+        }
+        timer += Time.deltaTime;
     }
     
     private void WallJump()
@@ -40,7 +49,9 @@ public class WallJumpState : OnWall
             controller.playerBody.localScale = scale;
 
         }
-        
+
+        RB.velocity = new Vector2(0, RB.velocity.y);
+
         Vector2 force = new Vector2(Data.wallJumpForce.x, Data.wallJumpForce.y);
         force.x *= tmp.x;
         

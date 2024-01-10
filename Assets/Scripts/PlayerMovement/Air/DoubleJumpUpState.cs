@@ -11,6 +11,15 @@ public class DoubleJumpUpState : AirState
     public override void Enter()
     {
         base.Enter();
+        if (IsFalling())
+        {
+            FSM.SetState<FallingState>();
+            return;
+        }
+        if (IsGrounded()) { 
+            FSM.SetState<IDLE>();
+            return;
+        }
     }
 
     public override void Exit()
