@@ -68,8 +68,9 @@ public class TouchWall : OnWall
         }
 
         if (_isFalling &&
-            !isTouchingRightWall &&
-            !isTouchingLeftWall)
+            (!isTouchingRightWall && !isTouchingLeftWall || 
+            isTouchingRightWall && _moveInput.x < 0 || 
+            isTouchingLeftWall && _moveInput.x >0))
         {
             FSM.SetState<FallingState>();
             return;
@@ -82,6 +83,7 @@ public class TouchWall : OnWall
             FSM.SetState<IDLE>();
             return;
         }
+        
         if (_isInAir && !_isFalling &&
             !isTouchingRightWall &&
             !isTouchingLeftWall)

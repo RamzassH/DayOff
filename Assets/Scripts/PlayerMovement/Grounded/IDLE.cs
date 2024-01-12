@@ -38,11 +38,6 @@ public class IDLE : GroundedState
     public override void Update()
     {
         base.Update();
-        
-        if (IsTouchWall())
-        {
-            FSM.SetState<TouchWall>();
-        }
 
         if (_moveInput.x != 0)
         {
@@ -59,11 +54,7 @@ public class IDLE : GroundedState
         {
             FSM.SetState<DashState>();
         }
-
-        if (IsFalling())
-        {
-            RechargeCoyoteTime();
-            FSM.SetState<FallingState>();
-        }
+        
+        
     }
 }

@@ -32,20 +32,10 @@ public class UpState : AirState
         _jumpCutBlockTime -= Time.deltaTime;
 
         #endregion
-
-        if (IsTouchWall())
-        {
-            FSM.SetState<TouchWall>();
-        }
-
-        if (IsFalling())
+        
+        if (IsFalling() && !IsDashing)
         {
             FSM.SetState<FallingState>();
-        }
-
-        if (controller.lastPressedDashTime > 0)
-        {
-            FSM.SetState<DashState>();
         }
         
         if (controller.lastPressedJumpTime > 0)

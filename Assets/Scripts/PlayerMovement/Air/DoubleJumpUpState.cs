@@ -32,17 +32,17 @@ public class DoubleJumpUpState : AirState
     {
         base.Update();
         
-        if (controller.lastPressedDashTime > 0)
-        {
-            FSM.SetState<DashState>();
-        }
+        // if (controller.lastPressedDashTime > 0)
+        // {
+        //     FSM.SetState<DashState>();
+        // }
 
-        if (IsTouchWall())
-        {
-            FSM.SetState<TouchWall>();
-        }
+        // if (IsTouchWall())
+        // {
+        //     FSM.SetState<TouchWall>();
+        // }
 
-        if (IsFalling())
+        if (IsFalling() && !IsDashing)
         {
             FSM.SetState<FallingState>();
         }

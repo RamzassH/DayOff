@@ -40,9 +40,9 @@ public class FallingState : AirState
             FSM.SetState<DoubleJump>();
         }
 
-        if (controller.lastPressedDashTime > 0)
+        if (IsDashing && IsFalling())
         {
-            FSM.SetState<DashState>();
+            FSM.SetState<FallingState>();
         }
 
         if (IsGrounded())
@@ -50,13 +50,7 @@ public class FallingState : AirState
             IsDoubleJumped = false;
             FSM.SetState<IDLE>();
         }
-
-        if (IsTouchWall())
-        {
-            IsDoubleJumped = false;
-            Debug.Log(IsTouchWall());
-            FSM.SetState<TouchWall>();
-        }
+        
     }
 
     public override void FixedUpdate()

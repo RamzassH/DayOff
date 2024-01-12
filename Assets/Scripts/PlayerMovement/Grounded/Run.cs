@@ -14,8 +14,6 @@ public class RunState : GroundedState
     public override void Enter()
     {
         base.Enter();
-        // _moveInput.x = Input.GetAxisRaw("Horizontal");
-        // Run(1, _moveInput);
     }
 
     public override void Exit()
@@ -30,27 +28,17 @@ public class RunState : GroundedState
             FSM.SetState<JumpState>();
         }
 
-        if (controller.lastPressedDashTime > 0)
+        if (controller.lastPressedDashTime > 0 && 
+            controller.dashRechargeTime < 0)
         {
             FSM.SetState<DashState>();
         }
         
-        if (IsTouchWall())
-        {
-            FSM.SetState<TouchWall>();
-        }
-
         base.Update();
 
         if (RB.velocity.x == 0 && RB.velocity.y == 0 && _moveInput.x == 0)
         {
             FSM.SetState<IDLE>();
-        }
-
-        if (IsFalling())
-        {
-            RechargeCoyoteTime();
-            FSM.SetState<FallingState>();
         }
     }
 
@@ -61,5 +49,32 @@ public class RunState : GroundedState
         {
             Run(1, _moveInput);
         }
+    }
+    
+    protected void Run(float lerpAmount, Vector2 _moveInput)
+    {
+        float targetSpeed = _moveInput.x * Data.runMaxSpeed;
+        
+        targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount);
+    
+        #region CALCULATE ACCELERATEION
+    
+        // Определяем ускорение в воздухе или на земле.
+        float accelerationRate;
+    
+        if (FSM.GetCurrentState() is GroundedState)
+            accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelerationAmount :
+                Data.runDeccelerationAmount;
+        else
+            accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelerationAmount * Data.accelerationInAir :
+                Data.runDeccelerationAmount * Data.deccelerationInAir;
+    
+        #endregion
+
+        float speedDif = targetSpeed - RB.velocity.x;
+    
+        float movement = speedDif * accelerationRate;
+    
+        RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
     }
 }

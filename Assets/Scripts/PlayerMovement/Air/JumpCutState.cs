@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class JumpCutState : State
+public class JumpCutState : AirState
 {
     
     public JumpCutState(ChController controller) :

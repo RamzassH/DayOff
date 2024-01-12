@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DashState : GroundedState
 {
-    private bool _isDashing;
+    //private bool _isDashing;
 
     public DashState(ChController controller) :
         base(controller)
@@ -14,12 +14,12 @@ public class DashState : GroundedState
     public override void Enter()
     {
         base.Enter();
-        
+
         controller.lastPressedDashTime = 0;
         RB.gravityScale = 0;
         Vector2 direction = new Vector2(playerTransform.localScale.x, 0);
-        
-        CameraShake.Instance.DoShakeCamera(2f,0.2f);
+
+        CameraShake.Instance.DoShakeCamera(2f, 0.2f);
         controller.StartCoroutine(StartDash(direction));
     }
 
@@ -33,35 +33,29 @@ public class DashState : GroundedState
     public override void Update()
     {
         base.Update();
-        
-        if (IsTouchWall())
-        {
-            FSM.SetState<TouchWall>();
-        }
-        
-        if (_moveInput.x != 0 && !_isDashing)
+
+        if (_moveInput.x != 0 && !IsDashing)
         {
             FSM.SetState<RunState>();
         }
 
-        if (_moveInput.x == 0 && !_isDashing)
+        if (_moveInput.x == 0 && !IsDashing)
         {
             FSM.SetState<IDLE>();
         }
 
-        if (IsInAir() &&
-            !_isDashing)
-        {
-            RechargeCoyoteTime();
-            FSM.SetState<FallingState>();
-        }
+        // if (IsInAir() &&
+        //     !IsDashing)
+        // {
+        //     RechargeCoyoteTime();
+        //     FSM.SetState<FallingState>();
+        // }
     }
 
     public IEnumerator StartDash(Vector2 dir)
     {
-        _isDashing = true;
+        IsDashing = true;
         float startTime = Time.time;
-        //RB.gravityScale = 0;
 
         while (Time.time - startTime <= Data.dashAttackTime)
         {
@@ -70,7 +64,6 @@ public class DashState : GroundedState
         }
 
         startTime = Time.time;
-        //RB.gravityScale = Data.gravityScale;
         RB.velocity = Data.dashEndSpeed * dir.normalized;
 
         while (Time.time - startTime <= Data.dashEndTime)
@@ -78,6 +71,6 @@ public class DashState : GroundedState
             yield return null;
         }
 
-        _isDashing = false;
+        IsDashing = false;
     }
 }

@@ -19,14 +19,12 @@ public class StateMachine
     public void SetState<T>() where T : State
     {
         var type = typeof(T);
-
-        //if (_currentState != null && _currentState.GetType() == type)
-        //{
-        //    return;
-        //}
-
         if (_states.TryGetValue(type, out var newState))
         {
+            if (newState == _currentState)
+            {
+                return;
+            }
             _currentState?.Exit();
             _currentState = newState;
             _currentState.Enter();

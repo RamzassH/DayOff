@@ -17,6 +17,7 @@ public abstract class State
     protected Vector2 _moveInput;
 
     protected bool IsFacingRight;
+    protected static bool IsDashing;
     
     public State(ChController controller)
     {
@@ -91,33 +92,32 @@ public abstract class State
                    0, groundLayer);
     }
     
-    protected void Run(float lerpAmount, Vector2 _moveInput)
-    {
-        // на старте мы движемся с меньшей скоростью
-        float targetSpeed = _moveInput.x * Data.runMaxSpeed;
-        
-        targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount);
-    
-        #region CALCULATE ACCELERATEION
-    
-        // Определяем ускорение в воздухе или на земле.
-        float accelerationRate;
-    
-        if (this is GroundedState)
-            accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelerationAmount :
-                                                                    Data.runDeccelerationAmount;
-        else
-            accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelerationAmount * Data.accelerationInAir :
-                                                                    Data.runDeccelerationAmount * Data.deccelerationInAir;
-    
-        #endregion
-
-        float speedDif = targetSpeed - RB.velocity.x;
-    
-        float movement = speedDif * accelerationRate;
-    
-        RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
-    }
+    // protected void Run(float lerpAmount, Vector2 _moveInput)
+    // {
+    //     float targetSpeed = _moveInput.x * Data.runMaxSpeed;
+    //     
+    //     targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount);
+    //
+    //     #region CALCULATE ACCELERATEION
+    //
+    //     // Определяем ускорение в воздухе или на земле.
+    //     float accelerationRate;
+    //
+    //     if (this is GroundedState)
+    //         accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelerationAmount :
+    //                                                                 Data.runDeccelerationAmount;
+    //     else
+    //         accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelerationAmount * Data.accelerationInAir :
+    //                                                                 Data.runDeccelerationAmount * Data.deccelerationInAir;
+    //
+    //     #endregion
+    //
+    //     float speedDif = targetSpeed - RB.velocity.x;
+    //
+    //     float movement = speedDif * accelerationRate;
+    //
+    //     RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
+    // }
     
     public void OnJumpInput()
     {

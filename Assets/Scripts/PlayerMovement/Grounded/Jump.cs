@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class JumpState : GroundedState
+public class JumpState : State
 {
     private float timer;
 
@@ -15,10 +15,7 @@ public class JumpState : GroundedState
         base.Enter();
         controller.lastPressedJumpTime = 0;
         timer = 0;
-        //float jumpForceMultiplier = Data.jumpForce;
-        
         Jump();
-        //FSM.SetState<UpState>();
     }
 
     public override void Update()

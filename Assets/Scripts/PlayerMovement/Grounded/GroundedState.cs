@@ -98,5 +98,21 @@ public class GroundedState : State
         }
 
         #endregion
+
+        #region CHANGE STATE
+
+              
+        if (IsTouchWall())
+        {
+            FSM.SetState<TouchWall>();
+        }
+        //
+        if (IsFalling() && !IsDashing)
+        {
+            RechargeCoyoteTime();
+            FSM.SetState<FallingState>();
+        }
+
+        #endregion
     }
 }

@@ -52,6 +52,19 @@ public class AirState : State
         }
         
         #endregion
+        
+        #region CHANGE STATE
+        
+        if (IsTouchWall())
+        {
+            FSM.SetState<TouchWall>();
+        }
+        
+        if (controller.lastPressedDashTime > 0)
+        {
+            FSM.SetState<DashState>();
+        }
+        #endregion
 
     }
 
