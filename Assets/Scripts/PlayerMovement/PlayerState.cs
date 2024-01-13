@@ -1,7 +1,8 @@
-using Unity.VisualScripting;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class State
+public class PlayerState : State
 {
     protected StateMachine FSM;
     protected Rigidbody2D RB;
@@ -13,13 +14,13 @@ public abstract class State
     protected Vector2 wallCheckSize;
 
     protected LayerMask groundLayer;
-    
+
     protected Vector2 _moveInput;
 
     protected bool IsFacingRight;
     protected static bool IsDashing;
-    
-    public State(ChController controller)
+
+    public PlayerState(ChController controller)
     {
         FSM = controller.FSM;
         RB = controller.RB;
@@ -34,30 +35,35 @@ public abstract class State
 
     public virtual void Enter()
     {
+
     }
 
     public virtual void Exit()
     {
+
     }
 
     public virtual void Update()
     {
+
     }
 
     public virtual void FixedUpdate()
     {
+
     }
 
     public virtual void Awake()
     {
-        
+
     }
 
     public virtual void LateUpdate()
     {
-        
+
     }
 
+    #region GOVNO_COD
     protected bool IsFalling()
     {
         return RB.velocity.y <= 0 && !Physics2D.OverlapBox(controller.groundCheck.position, groundCheckSize,
@@ -83,7 +89,6 @@ public abstract class State
             0, groundLayer);
     }
 
-    
     protected bool IsTouchWall()
     {
         return Physics2D.OverlapBox(controller.rightWallCheck.position, wallCheckSize,
@@ -91,34 +96,7 @@ public abstract class State
                Physics2D.OverlapBox(controller.leftWallCheck.position, wallCheckSize,
                    0, groundLayer);
     }
-    
-    // protected void Run(float lerpAmount, Vector2 _moveInput)
-    // {
-    //     float targetSpeed = _moveInput.x * Data.runMaxSpeed;
-    //     
-    //     targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount);
-    //
-    //     #region CALCULATE ACCELERATEION
-    //
-    //     // Определяем ускорение в воздухе или на земле.
-    //     float accelerationRate;
-    //
-    //     if (this is GroundedState)
-    //         accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelerationAmount :
-    //                                                                 Data.runDeccelerationAmount;
-    //     else
-    //         accelerationRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelerationAmount * Data.accelerationInAir :
-    //                                                                 Data.runDeccelerationAmount * Data.deccelerationInAir;
-    //
-    //     #endregion
-    //
-    //     float speedDif = targetSpeed - RB.velocity.x;
-    //
-    //     float movement = speedDif * accelerationRate;
-    //
-    //     RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
-    // }
-    
+
     public void OnJumpInput()
     {
         controller.lastPressedJumpTime = controller.data.jumpInputBufferTime;
@@ -129,11 +107,12 @@ public abstract class State
         if (controller.dashRechargeTime <= 0)
         {
             controller.lastPressedDashTime = controller.data.dashInputBufferTime;
-        } 
+        }
     }
 
     public void RechargeCoyoteTime()
     {
         controller.coyoteTime = controller.data.coyoteTime;
     }
+    #endregion
 }

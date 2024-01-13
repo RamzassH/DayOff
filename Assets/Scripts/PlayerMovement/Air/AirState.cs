@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class AirState : State
+public class AirState : PlayerState
 {
     static protected bool IsDoubleJumped;
     public AirState(ChController controller) :

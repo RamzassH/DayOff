@@ -5,7 +5,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class GroundedState : State
+public class GroundedState : PlayerState
 {
     protected Transform playerTransform;
     

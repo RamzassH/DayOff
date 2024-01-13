@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class OnWall : State
+public class OnWall : PlayerState
 {
     public OnWall(ChController controller) :
         base(controller)

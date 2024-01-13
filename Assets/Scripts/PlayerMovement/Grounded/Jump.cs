@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class JumpState : State
+public class JumpState : PlayerState
 {
     private float timer;
 

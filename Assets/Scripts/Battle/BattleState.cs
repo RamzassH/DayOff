@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleState : State
+public class BattleState : PlayerState
 {
     private const int MAX_ENEMY_TO_DAMAGE_COUNT = 10;
     private List<Collider2D> _damagedColliders;
